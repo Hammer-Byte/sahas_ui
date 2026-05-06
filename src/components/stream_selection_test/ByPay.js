@@ -4,6 +4,7 @@ import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { useDispatch } from "react-redux";
+import { updateCurrentUser } from "../../redux/sliceUser";
 
 export default function ByPay() {
     const { requestAPI, showToast } = useAppContext();
@@ -27,6 +28,24 @@ export default function ByPay() {
             });
 
     }, [requestAPI, paymentGateWayPayLoad]);
+
+
+    const startTestForFree = () => {
+        requestAPI({
+            requestPath: `users/stream-selection-test-allowed`,
+            requestMethod: "PATCH",
+            parseResponseBody: false,
+            onRequestFailure: () => showToast({ severity: "error", summary: "Failed", detail: "Failed To Load Test !", life: 2000 }),
+            onResponseReceieved: (_, responseCode) => {
+                if ( responseCode === 200) {
+                    showToast({ severity: "success", summary: "Success", detail: "Test Started For Free !", life: 2000 });
+                    dispatch(updateCurrentUser({ stream_selection_test_allowed: true }));
+                } else {
+                    showToast({ severity: "error", summary: "Failed", detail: "Failed To Start Test For Free !", life: 2000 });
+                }
+            },
+        });
+    };
 
 
 
@@ -57,9 +76,7 @@ export default function ByPay() {
                 </form>
                 :
 
-                <form action={"/api/temporary-stream-selection-test-enroll/stream-selection-test-allowed"} method="GET">
-                    <Button icon="pi pi-clipboard" label={`Start Test For Free`} severity="warning" />
-                </form>
+                <Button icon="pi pi-clipboard" label={`Start Test For Free`} severity="warning" onClick={startTestForFree} />
 
 
 
