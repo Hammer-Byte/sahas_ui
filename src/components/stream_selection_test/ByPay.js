@@ -57,7 +57,7 @@ export default function ByPay() {
                 </form>
                 :
 
-                <form action={"/api/users/stream-selection-test-allowed"} method="patch">
+                <form action={"/api/temporary-stream-selection-test-enroll/stream-selection-test-allowed"} method="patch">
                     <Button icon="pi pi-clipboard" label={`Start Test For Free`} severity="warning" />
                 </form>
 
