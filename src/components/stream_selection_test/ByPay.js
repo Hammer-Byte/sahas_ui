@@ -26,7 +26,7 @@ export default function ByPay() {
                 },
             });
 
-    }, [requestAPI,paymentGateWayPayLoad]);
+    }, [requestAPI, paymentGateWayPayLoad]);
 
 
 
@@ -39,21 +39,34 @@ export default function ByPay() {
             </p>
 
 
-            <form action={paymentGateWayPayLoad?.paymentGateWay?.url} method="post">
-                <input type="hidden" name="key" value={paymentGateWayPayLoad?.paymentGateWay?.merchantKey} />
-                <input type="hidden" name="txnid" value={paymentGateWayPayLoad?.transaction?.id} />
-                <input type="hidden" name="productinfo" value={paymentGateWayPayLoad?.product} />
-                <input type="hidden" name="email" value={paymentGateWayPayLoad?.user?.email} />
-                <input type="hidden" name="firstname" value={paymentGateWayPayLoad?.user?.firstName} />
-                <input type="hidden" name="lastname" value={paymentGateWayPayLoad?.user?.lastName} />
-                <input type="hidden" name="phone" value={paymentGateWayPayLoad?.user?.phone} />
-                <input type="hidden" name="surl" value={paymentGateWayPayLoad?.transaction?.successURL} />
-                <input type="hidden" name="furl" value={paymentGateWayPayLoad?.transaction?.failureURL} />
-                <input type="hidden" name="amount" value={paymentGateWayPayLoad?.transaction?.amount} />
-                <input type="hidden" name="hash" value={paymentGateWayPayLoad?.transaction?.hash} />
+            {paymentGateWayPayLoad?.transaction?.amount > 0 ?
+                <form action={paymentGateWayPayLoad?.paymentGateWay?.url} method="post">
+                    <input type="hidden" name="key" value={paymentGateWayPayLoad?.paymentGateWay?.merchantKey} />
+                    <input type="hidden" name="txnid" value={paymentGateWayPayLoad?.transaction?.id} />
+                    <input type="hidden" name="productinfo" value={paymentGateWayPayLoad?.product} />
+                    <input type="hidden" name="email" value={paymentGateWayPayLoad?.user?.email} />
+                    <input type="hidden" name="firstname" value={paymentGateWayPayLoad?.user?.firstName} />
+                    <input type="hidden" name="lastname" value={paymentGateWayPayLoad?.user?.lastName} />
+                    <input type="hidden" name="phone" value={paymentGateWayPayLoad?.user?.phone} />
+                    <input type="hidden" name="surl" value={paymentGateWayPayLoad?.transaction?.successURL} />
+                    <input type="hidden" name="furl" value={paymentGateWayPayLoad?.transaction?.failureURL} />
+                    <input type="hidden" name="amount" value={paymentGateWayPayLoad?.transaction?.amount} />
+                    <input type="hidden" name="hash" value={paymentGateWayPayLoad?.transaction?.hash} />
 
-                <Button icon="pi pi-clipboard" label={`Pay ${paymentGateWayPayLoad?.transaction?.amount} Rs`} severity="warning" />
-            </form>
+                    <Button icon="pi pi-clipboard" label={`Pay ${paymentGateWayPayLoad?.transaction?.amount} Rs`} severity="warning" />
+                </form>
+                :
+
+                <form action={"/api/users/stream-selection-test-allowed"} method="patch">
+                    <Button icon="pi pi-clipboard" label={`Start Test For Free`} severity="warning" />
+                </form>
+
+
+
+            }
+
+
+
 
 
 
