@@ -5,7 +5,7 @@ import { useAppContext } from "../providers/ProviderAppContainer";
 import { setCurrentUser } from "../redux/sliceUser";
 
 export default function ProcessAuthenticationToken({children}) {
-    const { requestAPI, applicationLoading, setApplicationLoading } = useAppContext();
+    const { requestAPI,  setApplicationBlocker } = useAppContext();
 
     const loggedInUser = useSelector((state) => state.stateUser);
 
@@ -13,12 +13,15 @@ export default function ProcessAuthenticationToken({children}) {
 
     const clearAuthenticationToken = useCallback(() => localStorage.removeItem(KEY_AUTHENTICATION_TOKEN), []);
 
+
     useEffect(() => {
-        if (!applicationLoading && !loggedInUser && localStorage.getItem(KEY_AUTHENTICATION_TOKEN)) {
+        if (!loggedInUser && localStorage.getItem(KEY_AUTHENTICATION_TOKEN)) {
+            console.log(loggedInUser)
+
             requestAPI({
                 requestPath: "authentication-tokens",
                 onRequestFailure: clearAuthenticationToken,
-                setLoading: (loading) => setApplicationLoading(loading ? { message: "Validating Authentication Token..." } : loading),
+                setLoading: (loading) => setApplicationBlocker(loading ? {title: "Processing Authentication Token", message: "Restoring Your Session..." } : loading),
                 onResponseReceieved: (user, responseCode) => {
                     if (user && responseCode === 200) {
                         dispatch(setCurrentUser(user));
@@ -28,7 +31,8 @@ export default function ProcessAuthenticationToken({children}) {
                 },
             });
         }
-    }, [applicationLoading, clearAuthenticationToken, dispatch, loggedInUser, requestAPI, setApplicationLoading]);
+
+    },[loggedInUser, requestAPI, setApplicationBlocker, dispatch, clearAuthenticationToken])
 
     return children;
 

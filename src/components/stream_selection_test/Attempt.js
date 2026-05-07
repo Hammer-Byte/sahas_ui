@@ -9,9 +9,10 @@ import Ask from "../manage_stream_selection/question_categories/Ask";
 import NoContent from "../common/NoContent";
 import { updateCurrentUser } from "../../redux/sliceUser";
 import { KEY_GUEST } from "../../constants";
+import { Title } from "chart.js";
 
 export default function Attempt() {
-    const { requestAPI, showToast, setApplicationLoading } = useAppContext();
+    const { requestAPI, showToast, setApplicationBlocker } = useAppContext();
     const [loading, setLoading] = useState();
     const [questions, setQuestions] = useState();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState();
@@ -44,12 +45,7 @@ export default function Attempt() {
             [KEY_GUEST]: loggedInUser?.id,
         },
         requestPostBody: questions,
-        onRequestStart: () =>
-            setApplicationLoading({
-                message:
-                    "Your Psychometric Performance is Under Evaluation by Most Advance Ai & Psycologist Opinion By Considering All Aspects of Your Personality",
-            }),
-        onRequestEnd: setApplicationLoading,
+        setLoading:(loading)=>setApplicationBlocker(loading ? { title: "Processing Psychometric Test", message: "Your Psychometric Performance is Under Evaluation by Most Advance Ai & Psycologist Opinion By Considering All Aspects of Your Personality" } : loading),
         onResponseReceieved: ({ error, ...streamSelectionTestResult }, responseCode) => {
             if (responseCode === 201) {
                 showToast({ severity: "success", summary: "Added", detail: "Psychometric Test Submitted", life: 2000 });

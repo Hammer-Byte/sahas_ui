@@ -13,7 +13,7 @@ export default function ManageUsers() {
 
     const navigate = useNavigate();
 
-    const { setApplicationLoading } = useAppContext();
+    const { setApplicationBlocker } = useAppContext();
 
     const [dialogAddUser, setDialogAddUser] = useState({
         visible: false,
@@ -39,11 +39,11 @@ export default function ManageUsers() {
                         <i
                             className="pi pi-power-off"
                             onClick={() => {
-                                setApplicationLoading({ message: "Logging out..." });
+                                setApplicationBlocker({ title: "Logging out", message: "Clearing Session..." });
                                 localStorage.removeItem(KEY_AUTHENTICATION_TOKEN);
                                 disaptch(removeCurrentUser());
                                 navigate("/");
-                                setApplicationLoading(false);
+                                setApplicationBlocker(false);
                             }}
                         ></i>
                     </div>

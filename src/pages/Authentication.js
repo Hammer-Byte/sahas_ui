@@ -1,6 +1,6 @@
 import { APP_NAME, REGEX_EMAIL } from "../constants";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import CardInputEmail from "../components/authentication/CardInputEmail";
 import DialogInputOTP from "../components/authentication/DialogInputOTP";
@@ -14,7 +14,7 @@ export default function Authentication() {
 
     const [authenticationToken, setAuthenticationToken] = useState();
 
-    const requestOTP = (setLoading, setError) => {
+    const requestOTP = useCallback((setLoading, setError) => {
         if (REGEX_EMAIL.test(email)) {
             requestAPI({
                 requestPath: "authentication-tokens",
@@ -36,7 +36,7 @@ export default function Authentication() {
         } else {
             setError("Enter Valid Email Address !");
         }
-    };
+    }, [email, requestAPI, showToast, setAuthenticationToken]);
 
     return (
         <div className=" flex flex-column min-h-screen bg-primary">
