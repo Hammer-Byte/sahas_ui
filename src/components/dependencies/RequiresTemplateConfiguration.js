@@ -1,22 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useAppContext } from "../../providers/ProviderAppContainer";
-import { useEffect } from "react";
 import { setTemplateConfig } from "../../redux/sliceTemplateConfig";
+import { useEffect } from "react";
+
 
 export default function RequiresTemplateConfiguration({ children }) {
-    const { requestAPI, setApplicationError, setApplicationLoading, applicationLoading } = useAppContext();
+    const { requestAPI, setApplicationBlocker } = useAppContext();
 
     const templateConfig = useSelector((state) => state.stateTemplateConfig);
 
     const dispatch = useDispatch();
 
+    
     useEffect(() => {
-        if (!templateConfig && !applicationLoading) {
+        if (!templateConfig) {
             requestAPI({
                 requestPath: "template-configs",
-                setLoading: (loading) => setApplicationLoading(loading ? { message: "Loading Template Configuration..." } : loading),
+                setLoading: (loading) => setApplicationBlocker(loading ? { title: "Template Configuration", message: "Fetching Template Configuration..." } : loading),
                 onRequestFailure: (error) =>
-                    setApplicationError({
+                    setApplicationBlocker({
+                        icon: "images/error.png",
                         title: "No Template Configuration",
                         message: `Unable To Load Template Configuration - ${error}`,
                     }),
@@ -24,14 +27,13 @@ export default function RequiresTemplateConfiguration({ children }) {
                     if (templateConfig && responseCode === 200) {
                         return dispatch(setTemplateConfig(templateConfig));
                     }
-
-                    throw new Error("Invalid Template Configuration Response");
                 },
             });
+            return;
         }
-    }, [dispatch, requestAPI, setApplicationError, applicationLoading, setApplicationLoading, templateConfig]);
 
-    if (templateConfig) {
-        return children;
-    }
+    }, [templateConfig, requestAPI, setApplicationBlocker, dispatch])
+
+    if (templateConfig) { return children; }
+
 }

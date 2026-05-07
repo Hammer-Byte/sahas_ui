@@ -1,34 +1,22 @@
 import { Toast } from "primereact/toast";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useRef, useState } from "react";
 import { generateDeviceFingerprint } from "../utils";
-import Loading from "../components/common/Loading";
-import { KEY_DEVICE_FINGER_PRINT, KEY_AUTHENTICATION_TOKEN, KEY_GUEST, KEY_GUEST_TOKEN } from "../constants";
-import Error from "../pages/Error";
+import { KEY_DEVICE_FINGER_PRINT, KEY_AUTHENTICATION_TOKEN, KEY_GUEST_TOKEN } from "../constants";
 
 const ContextApp = createContext();
 
 export const ProviderAppContainer = ({ children }) => {
-    const [applicationError, setApplicationError] = useState();
-    const [applicationLoading, setApplicationLoading] = useState();
+    const [applicationBlocker, setApplicationBlocker] = useState();
     const [deviceFingerPrint, setDeviceFingerPrint] = useState();
-    const isDevelopmentBuild = process.env.NODE_ENV === "development";
 
     const toastRef = useRef(null);
 
-    //generating Device FingerPrint
-    useEffect(() => {
-        if (!applicationLoading) {
-            setApplicationLoading({ message: "Generating Device Fingerprint..." });
-            generateDeviceFingerprint()
-                .then(setDeviceFingerPrint)
-                .catch(() => setApplicationError("Failed To Generate Device Fingerprint"))
-                .finally(setApplicationLoading);
-        }
-    }, [applicationLoading]);
 
-    const showToast = (config) => {
+
+    const showToast = useCallback((config) => {
         toastRef.current.show(config);
-    };
+    }, []);
+
 
     //api requests
     const requestAPI = useCallback(
@@ -89,7 +77,7 @@ export const ProviderAppContainer = ({ children }) => {
                 const response = await fetch(requestPath, fetchOptions);
                 const jsonResponse = parseResponseBody ? await response.json() : response;
                 if (response.status === 503) {
-                    return setApplicationError({
+                    return setApplicationBlocker({
                         icon: "images/maintenance.gif",
                         title: "Under Maintenance",
                         message: "The application is currently under maintenance. Please try again later.",
@@ -106,24 +94,32 @@ export const ProviderAppContainer = ({ children }) => {
         [deviceFingerPrint],
     );
 
+    //generating Device FingerPrint
+    if (!applicationBlocker && !deviceFingerPrint) {
+        setApplicationBlocker({ icon: "images/device.gif", title: "Device Fingerprint", message: "Generating Device Fingerprint..." });
+        generateDeviceFingerprint()
+            .then(setDeviceFingerPrint)
+            .catch(() => setApplicationBlocker({ icon: "images/error.png", message: "Failed To Generate Device Fingerprint" }))
+            .finally(setApplicationBlocker);
+
+        return;
+    }
+
+
+
+
     return (
         <ContextApp.Provider
-            value={{ showToast, setApplicationError, requestAPI, applicationLoading, setApplicationLoading, isDevelopmentBuild, deviceFingerPrint }}
+            value={{ showToast, requestAPI, applicationBlocker, setApplicationBlocker }}
         >
             <Toast ref={toastRef} position="top-center" />
 
-            {applicationLoading ? (
-                <div className="h-full w-full flex align-items-center justify-content-center p-3">
-                    <div className="border-1 border-gray-300 border-round bg-white px-3 py-3 w-full max-w-20rem">
-                        <Loading
-                            type="small"
-                            className="align-items-center gap-2"
-                            message={applicationLoading.message || "Preparing application..."}
-                        />
-                    </div>
+            {applicationBlocker ? (
+                <div className="h-full w-full flex align-items-center justify-content-center p-3  flex-column">
+                    <img src={`${applicationBlocker?.icon || "images/loading.gif"}`} alt="loading" className="w-8rem h-8rem" loading="lazy" />
+                    <span className="text-2xl font-bold">{applicationBlocker?.title || "Loading"}</span>
+                    <span className="text-sm text-color-secondary mt-2">{applicationBlocker?.message || "Preparing application..."}</span>
                 </div>
-            ) : applicationError ? (
-                <Error {...applicationError} />
             ) : (
                 deviceFingerPrint && children
             )}

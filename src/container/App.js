@@ -24,7 +24,6 @@ import ManageCouponCodes from "../pages/ManageCouponCodes";
 import CouponCodes from "../components/manage_coupon_codes/CouponCodes";
 import CouponCodeCourses from "../components/manage_coupon_codes/CouponCodeCourses";
 import EnrollPage from "../pages/Enroll";
-import PaymentGatewayPayLoad from "../pages/PaymentGatewayPayLoad";
 import MediaCatalogue from "../components/course/MediaCatalogue";
 import Media from "../pages/Media";
 import { AUTHORITIES } from "../constants";
@@ -41,30 +40,30 @@ import GlobalNotes from "../components/manage_users/user/GlobalNotes";
 import StreamSelectionTestResults from "../components/manage_users/user/StreamSelectionTestResults";
 import ManageStreamSelection from "../pages/ManageStreamSelection";
 import Questions from "../components/manage_stream_selection/question_categories/Questions";
-import TestResult from "../components/stream_selection_test/TestResult";
-import Attempt from "../components/stream_selection_test/Attempt";
-import About from "../components/stream_selection_test/About";
-import Enroll from "../components/stream_selection_test/Enroll";
-import RequiresGuestUser from "../components/dependencies/RequiresGuestUser";
 import QRInvites from "../components/manage_stream_selection/QRInvites";
 import QuestionCategories from "../components/manage_stream_selection/QuestionCategories";
-import Analysis from "../components/stream_selection_test/Analysis";
 import ContactUs from "../pages/ContactUs";
-import StreamSelectionTest from "../pages/StreamSelectionTest";
 import RequiresAuthentication from "../components/dependencies/RequiresAuthentication";
 import Tests from "../components/manage_stream_selection/Tests";
 import Configs from "../components/manage_stream_selection/Configs";
 import Suggestions from "../components/manage_stream_selection/Suggestions";
-import ProcessAuthenticationToken from "./ProcessAuthenticationToken";
 import ProcessGuestToken from "./ProcessGuestToken";
+import Attempt from "../components/stream_selection_test/Attempt";
+import Enroll from "../components/stream_selection_test/Enroll";
+import TestResult from "../components/stream_selection_test/TestResult";
+import Analysis from "../components/stream_selection_test/Analysis";
+import RequiresGuestUser from "../components/dependencies/RequiresGuestUser";
+import StreamSelectionTest from "../pages/StreamSelectionTest";
+import About from "../components/stream_selection_test/About";
+import PaymentGatewayPayLoad from "../pages/PaymentGatewayPayLoad";
+
 
 export default function App() {
+
+
     return (
         <RequiresTemplateConfiguration>
-
-            <ProcessAuthenticationToken >
-
-                <Routes>
+            <Routes>
 
                     <Route element={<ProcessGuestToken />}>
                         <Route path="/stream-selection-test" element={<StreamSelectionTest />}>
@@ -193,12 +192,7 @@ export default function App() {
                     </Route>
 
                     <Route path="*" element={<NotFound />} />
-                </Routes>
-
-            </ProcessAuthenticationToken >
-
-
-
+            </Routes>
         </RequiresTemplateConfiguration>
     );
 }
