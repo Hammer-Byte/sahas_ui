@@ -15,12 +15,7 @@ export default function Revenue() {
         <div className="flex flex-column h-full">
             <PageTitle
                 title={"Revenue"}
-                action={
-                    <div className="flex gap-3">
-                        <span className="pi pi-filter-fill" />
-                        <span className="pi pi-download" />
-                    </div>
-                }
+                
             />
             <TabView className="flex-1 overflow-y-auto" panelContainerClassName="p-0">
                 <TabPanel header="Courses">
