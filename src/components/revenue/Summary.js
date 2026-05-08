@@ -3,16 +3,37 @@ import { classNames } from "primereact/utils";
 import { Divider } from "primereact/divider";
 import { RUPEE } from "../../constants";
 import Detail from "../common/Detail";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import Loading from "../common/Loading";
 import { TEXT_BADGE } from "../../style";
+import { Button } from "primereact/button";
 
 export default function Summary({ dates, setDates }) {
     const { requestAPI, showToast } = useAppContext();
 
     const [loading, setLoading] = useState();
     const [summary, setSummary] = useState();
+
+    const downloadReport = useCallback(() => {
+        if (dates)
+            requestAPI({
+                requestMethod: "GET",
+                requestPath: `enrollment-transactions/report`,
+                requestGetQuery: {
+                    start_date: dates[0],
+                    end_date: dates[1],
+                },
+                onResponseReceieved: ({ error, ...report }, responseCode) => {
+                    if (responseCode === 200 && report?.cdn_url) {
+                        window.open(report.cdn_url, "_blank", "noopener,noreferrer");
+                    } else {
+                        showToast({ severity: "error", summary: "Failed", detail: "Failed To Download Report !", life: 2000 });
+                    }
+                },
+                onRequestFailure: () => showToast({ severity: "error", summary: "Failed", detail: "Failed To Download Report !", life: 2000 }),
+            });
+    }, [dates, requestAPI, showToast]);
 
     useEffect(() => {
         if (dates)
@@ -56,9 +77,12 @@ export default function Summary({ dates, setDates }) {
                 />
             </div>
 
-            <div className="p-2 flex justify-content-around  ">
+            <div className="p-2 flex justify-content-between  align-items-center">
                 <Detail className={"border-1 border-gray-300 border-round p-3 "} icon={"pi pi-calculator"} title="Transactions" value={summary?.transactions} />
                 <Detail className={"border-1 border-gray-300 border-round p-3 "} icon={"pi pi-users"} title="Enrollments" value={summary?.enrollments} />
+                <Button rounded severity="contrast" icon={"pi pi-download"} title="Download" value={summary?.enrollments} onClick={downloadReport} />
+                <Button rounded severity="contrast" icon={"pi pi-filter-fill"} title="Download" value={summary?.enrollments} />
+
             </div>
             <div className="px-2 mt-1 flex justify-content-around  ">
                 <Detail
