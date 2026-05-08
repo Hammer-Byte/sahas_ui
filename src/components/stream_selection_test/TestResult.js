@@ -8,12 +8,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { useSelector } from "react-redux";
 
-export default function TestResult() {
+export default function TestResult({ streamSelectionTestResult, showAnalysisButton = true, showPublicActions = true }) {
     const location = useLocation();
     const navigate = useNavigate();
     const { suggestions = [] } = useSelector((state) => state.stateTemplateConfig?.stream_selection || {});
     const routeResult = location.state?.streamSelectionTestResult;
-    const currentResult = routeResult;
+    const currentResult = streamSelectionTestResult || routeResult;
 
     return currentResult?.result ? (
         <div className="flex-1 flex flex-column overflow-y-scroll">
@@ -32,14 +32,16 @@ export default function TestResult() {
                 </div>}>
                 <ResultSummary {...currentResult.result} />
                 <div className="mt-2 flex flex-column md:flex-row gap-2">
-                    <Button
-                        outlined
-                        severity="warning"
-                        className="w-full"
-                        label="Stream Specific Analysis"
-                        icon="pi pi-chart-line"
-                        onClick={() => navigate("../analysis", { state: { streamSelectionTestResult: currentResult } })}
-                    />
+                    {showAnalysisButton && (
+                        <Button
+                            outlined
+                            severity="warning"
+                            className="w-full"
+                            label="Stream Specific Analysis"
+                            icon="pi pi-chart-line"
+                            onClick={() => navigate("../analysis", { state: { streamSelectionTestResult: currentResult } })}
+                        />
+                    )}
                     {!!suggestions?.length &&
                         suggestions.map(({ id, title, pdf }) => (
                             <Button
@@ -50,23 +52,25 @@ export default function TestResult() {
                             />
                         ))}
                 </div>
-                <div className="mt-2 flex gap-2 w-full">
-                    <Button
-                        className="flex-1"
-                        outlined
-                        label="Contact us"
-                        icon="pi pi-envelope"
-                        onClick={() => navigate("/contact-us")}
-                    />
-                    <Button
-                        className="flex-1"
-                        outlined
-                        severity="secondary"
-                        label="Login to app"
-                        icon="pi pi-sign-in"
-                        onClick={() => navigate("/")}
-                    />
-                </div>
+                {showPublicActions && (
+                    <div className="mt-2 flex gap-2 w-full">
+                        <Button
+                            className="flex-1"
+                            outlined
+                            label="Contact us"
+                            icon="pi pi-envelope"
+                            onClick={() => navigate("/contact-us")}
+                        />
+                        <Button
+                            className="flex-1"
+                            outlined
+                            severity="secondary"
+                            label="Login to app"
+                            icon="pi pi-sign-in"
+                            onClick={() => navigate("/")}
+                        />
+                    </div>
+                )}
                 <Divider className="my-3" />
                 {
                     currentResult?.answers?.length &&

@@ -69,30 +69,46 @@ export default function Tests() {
                     {tests.map((test) => (
                         <div key={test?.id} className="surface-card border-1 surface-border border-round p-3">
                             <div className="flex justify-content-between align-items-center gap-2 mb-2">
-                                <span className="font-semibold">Test #{test?.id}</span>
-                                <span className={`text-color-secondary ${TEXT_SMALL}`}>{getReadableDate({ date: test?.created_at })}</span>
+                                <span className="font-semibold">{test?.full_name || "-"}</span>
+                                <span className={`text-color-secondary ${TEXT_SMALL} flex align-items-center gap-1`}>
+                                    <i className="pi pi-calendar" />
+                                    {getReadableDate({ date: test?.created_at })}
+                                </span>
                             </div>
                             <div className={`text-color-secondary ${TEXT_SMALL} line-height-3`}>
-                                <div>User Id: {test?.user_id || "-"}</div>
-                                <div>Full Name: {test?.full_name || "-"}</div>
-                                <div>Created At: {getReadableDate({ date: test?.created_at })}</div>
+                                <div className="flex align-items-center gap-2 flex-wrap">
+                                    <span>Phone: {test?.phone || "-"}</span>
+                                    <Button
+                                        type="button"
+                                        size="small"
+                                        text
+                                        icon="pi pi-phone"
+                                        label="Call"
+                                        disabled={!test?.phone}
+                                        onClick={() => window.open(`tel:${test?.phone}`, "_self")}
+                                    />
+                                </div>
+                                <div>Institute: {test?.institute || "-"}</div>
+                                <div>Course: {test?.course || "-"}</div>
                             </div>
                             <div className="mt-3 flex gap-2 flex-wrap">
                                 <Button
                                     type="button"
                                     outlined
+                                    size="small"
                                     icon="pi pi-user"
                                     label="Visit Profile"
                                     disabled={!test?.user_id}
-                                    onClick={() => navigate(`/manage-users/${test?.user_id}/stream-selection-test-results`)}
+                                    onClick={() => navigate(`/manage-users/${test?.user_id}/basics`)}
                                 />
                                 <Button
                                     type="button"
+                                    size="small"
                                     icon="pi pi-external-link"
                                     label="View"
                                     severity="secondary"
-                                    disabled={!test?.report_url}
-                                    onClick={() => window.open(test?.report_url, "_blank", "noopener,noreferrer")}
+                                    disabled={!test?.user_id}
+                                    onClick={() => navigate(`/manage-users/${test?.user_id}/stream-selection-test-results`)}
                                 />
                             </div>
                         </div>
