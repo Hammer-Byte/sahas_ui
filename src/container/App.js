@@ -56,7 +56,8 @@ import RequiresGuestUser from "../components/dependencies/RequiresGuestUser";
 import StreamSelectionTest from "../pages/StreamSelectionTest";
 import About from "../components/stream_selection_test/About";
 import PaymentGatewayPayLoad from "../pages/PaymentGatewayPayLoad";
-
+import Exam from "../pages/Exam";
+import ManageExams from "../pages/ManageExams";
 
 export default function App() {
 
@@ -188,7 +189,10 @@ export default function App() {
 
                         <Route path="/enroll/:courseId" element={<EnrollPage />} />
                         <Route path="/revenue" element={<Revenue />} />
-                        
+
+                        <Route path="/exam" element={<Exam />}>
+                        </Route>
+                        <Route path="/manage-exams" element={<ManageExams />} />
                     </Route>
 
                     <Route path="*" element={<NotFound />} />
