@@ -64,7 +64,7 @@ export default function ChaptersHead({ setLoading, setError, chapters, setChapte
             <TabHeader
                 className={"p-3 bg-gray-100"}
                 title={`${subject?.title} Chapters`}
-                highlights={[`Demo Chapters Requires No Enrollment`, `Chapters Are Categorized Into Sections`]}
+                // highlights={[`Demo Chapters Requires No Enrollment`, `Chapters Are Categorized Into Sections`]}
                 actionItems={[
                     <HasRequiredAuthority requiredAuthority={AUTHORITIES.CREATE_CHAPTERS}>
                         <Button

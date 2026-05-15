@@ -16,6 +16,18 @@ export default function Dashboard() {
 
     const dispatch = useDispatch();
 
+    const sahasWhatsAppShareMessage = `*Sahas Institute of Commerce*
+
+Holistic commerce learning with expert teachers, videos & step-by-step guidance in Business Studies, Economics, Accounting, Finance & Statistics.
+
+*Courses:*
+• 11th & 12th Commerce (English & Gujarati)
+• FY, SY & TY B.Com (MSU)
+• CA & CS
+
+Explore programs & the *Sahas Smart Studies* app:
+https://www.sahasinstitute.com/`;
+
     return (
         <div className="flex flex-column h-full overflow-hidden">
             <div className="bg-primary shadow-3 flex align-items-center gap-3 p-2">
@@ -35,6 +47,15 @@ export default function Dashboard() {
                         onClick={() => dispatch(updateDashboardDialog({ active: true }))}
                     />
                 </HasRequiredAuthority>
+
+                <i
+                    className="pi pi-share-alt p-overlay-badge"
+                    style={{ fontSize: "1.5rem" }}
+                    title="Share on WhatsApp"
+                    onClick={() =>
+                        window.open(`https://wa.me/?text=${encodeURIComponent(sahasWhatsAppShareMessage)}`, "_blank", "noopener,noreferrer")
+                    }
+                />
 
                 <i className="pi pi-bell p-overlay-badge mr-2" style={{ fontSize: "1.5rem" }}>
                     <Badge value="2" severity="warning"></Badge>

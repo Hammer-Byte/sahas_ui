@@ -66,7 +66,7 @@ export default function SubjectsHead({ course, subjects, setSubjects, updatingVi
             <TabHeader
                 className={"p-3 bg-gray-900 text-white"}
                 title="Subjects"
-                highlights={[`Total ${subjects?.length} Subjects`]}
+                // highlights={[`Total ${subjects?.length} Subjects`]}
                 actionItems={[
                     <HasRequiredAuthority requiredAuthority={AUTHORITIES.CREATE_COURSE_SUBJECT}>
                         <Button
