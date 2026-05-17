@@ -53,7 +53,7 @@ export default function GlobalNotes() {
                 title={`User's Global Notes`}
                 highlights={[`Total - ${globalNotes?.length} Notes`]}
                 actionItems={[
-                    <HasRequiredAuthority requiredAuthority={AUTHORITIES.MANAGE_OTHER_USERS}>
+                    <HasRequiredAuthority requiredAuthority={AUTHORITIES.CREATE_GLOBAL_NOTE}>
                         <Button
                             icon="pi pi-plus"
                             severity="warning"

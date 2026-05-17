@@ -23,7 +23,7 @@ export default function Note({ id, created_by_full_name, created_at, note, type,
     }, []);
 
 
-    const deleteInquiryNote = useCallback(() => {
+    const deleteGlobalNote = useCallback(() => {
         requestAPI({
             requestPath: `global-notes/${id}`,
             requestMethod: "DELETE",
@@ -54,10 +54,10 @@ export default function Note({ id, created_by_full_name, created_at, note, type,
             <div className="flex align-items-center gap-2">
                 {type && <Badge severity={getNoteSeverityByType(type)} value={type} />}
 
-                <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_INQUIRY_NOTE}>
+                <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_GLOBAL_NOTE}>
                     <ProgressiveControl
                         loading={loading}
-                        control={<Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" onClick={deleteInquiryNote} />}
+                        control={<Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" onClick={deleteGlobalNote} />}
                     />
                 </HasRequiredAuthority>
             </div>
