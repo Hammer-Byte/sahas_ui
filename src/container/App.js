@@ -56,6 +56,10 @@ import RequiresGuestUser from "../components/dependencies/RequiresGuestUser";
 import StreamSelectionTest from "../pages/StreamSelectionTest";
 import About from "../components/stream_selection_test/About";
 import PaymentGatewayPayLoad from "../pages/PaymentGatewayPayLoad";
+import ManageExamSeries from "../pages/ManageExamSeries";
+import ExamSeries from "../components/manage_exams/ExamSeries";
+import Exams from "../components/manage_exams/Exams";
+import ExamQuestions from "../components/manage_exams/ExamQuestions";
 
 
 export default function App() {
@@ -76,7 +80,6 @@ export default function App() {
                             </Route>
                         </Route>
                     </Route>
-
 
                     <Route path="/payment-gateway-payloads/:paymentGatewayPayloadId" element={<PaymentGatewayPayLoad />} />
                     <Route path="/contact-us" element={<ContactUs />} />
@@ -187,6 +190,11 @@ export default function App() {
                         </Route>
 
                         <Route path="/enroll/:courseId" element={<EnrollPage />} />
+                        <Route path="/manage-exam-series" element={<ManageExamSeries />}>
+                            <Route path="exam-series" element={<ExamSeries />} />
+                            <Route path=":id/exams" element={<Exams />} />
+                            <Route path="exams/:id/questions" element={<ExamQuestions />} />
+                        </Route>
                         <Route path="/revenue" element={<Revenue />} />
                         
                     </Route>
