@@ -34,9 +34,9 @@ export default function Operations({ className }) {
                         path: `/invoices`,
                     },
                     {
-                        title: "Exam",
+                        title: "Exam Series",
                         icon: "pi-pencil",
-                        path: "/exam",
+                        path: "/exam-series/list",
                     },
 
                     {

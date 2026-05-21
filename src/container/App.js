@@ -58,8 +58,12 @@ import About from "../components/stream_selection_test/About";
 import PaymentGatewayPayLoad from "../pages/PaymentGatewayPayLoad";
 import ManageExamSeries from "../pages/ManageExamSeries";
 import ExamSeries from "../components/manage_exams/ExamSeries";
-import Exams from "../components/manage_exams/Exams";
+import ManageSeriesExams from "../components/manage_exams/Exams";
 import ExamQuestions from "../components/manage_exams/ExamQuestions";
+import StudentExamSeries from "../pages/ExamSeries";
+import ExamSeriesList from "../components/exam_series/ExamSeriesList";
+import ExamSeriesDetail from "../components/exam_series/ExamSeriesDetail";
+import ExamSeriesPaidEnrollment from "../components/exam_series/ExamSeriesPaidEnrollment";
 
 
 export default function App() {
@@ -150,6 +154,11 @@ export default function App() {
                             </Route>
                         </Route>
                         <Route path="/my-courses" element={<MyCourses />}></Route>
+                        <Route path="/exam-series" element={<StudentExamSeries />}>
+                            <Route path="list" element={<ExamSeriesList />} />
+                            <Route path="paid-enrollment/:id" element={<ExamSeriesPaidEnrollment />} />
+                            <Route path=":id" element={<ExamSeriesDetail />} />
+                        </Route>
                         <Route path="/media-player/:mediaId" element={<Media />}></Route>
                         <Route path="/manage-chapter-types" element={<ManageChapterTypes />} />
                         <Route path="/chapters-test" element={<ChaptersTest />}>
@@ -192,7 +201,7 @@ export default function App() {
                         <Route path="/enroll/:courseId" element={<EnrollPage />} />
                         <Route path="/manage-exam-series" element={<ManageExamSeries />}>
                             <Route path="exam-series" element={<ExamSeries />} />
-                            <Route path=":id/exams" element={<Exams />} />
+                            <Route path=":id/exams" element={<ManageSeriesExams />} />
                             <Route path="exams/:id/questions" element={<ExamQuestions />} />
                         </Route>
                         <Route path="/revenue" element={<Revenue />} />

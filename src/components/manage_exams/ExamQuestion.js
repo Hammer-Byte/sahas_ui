@@ -6,6 +6,7 @@ import { ICON_SIZE, TEXT_NORMAL, TEXT_SMALL } from "../../style";
 import IconButton from "../common/IconButton";
 import ProgressiveControl from "../common/ProgressiveControl";
 import DialogEditExamQuestion from "./DialogEditExamQuestion";
+import { resolveCorrectChoice } from "./examQuestionUtils";
 
 const CHOICE_FIELDS = ["choice_one", "choice_two", "choice_three", "choice_four"];
 
@@ -47,6 +48,13 @@ export default function ExamQuestion({
     }, [id, requestAPI, setQuestions, showToast]);
 
     const choices = { choice_one, choice_two, choice_three, choice_four };
+    const resolvedCorrectChoice = resolveCorrectChoice({
+        correct_choice,
+        choice_one,
+        choice_two,
+        choice_three,
+        choice_four,
+    });
 
     return (
         <div className="border-1 border-gray-300 border-round p-2 flex gap-2">
@@ -87,10 +95,9 @@ export default function ExamQuestion({
                     />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                    {CHOICE_FIELDS.map((field, index) => {
-                        const choiceNumber = index + 1;
-                        const isCorrect = Number(correct_choice) === choiceNumber;
+                    {CHOICE_FIELDS.map((field) => {
                         const label = choices[field];
+                        const isCorrect = label === resolvedCorrectChoice;
                         return isCorrect ? (
                             <Tag key={field} severity="success" value={label} pt={{ value: { className: TEXT_SMALL } }} />
                         ) : (

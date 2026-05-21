@@ -176,19 +176,13 @@ const APPLICATION_CONSTANTS = {
         DELETE_STREAM_SELECTION_QUESTION_CATEGORY: "DELETE_STREAM_SELECTION_QUESTION_CATEGORY",
     },
     RUPEE: " ₹",
-    CORRECT_CHOICE_OPTIONS: [
-        { label: "Choice 1", value: 1 },
-        { label: "Choice 2", value: 2 },
-        { label: "Choice 3", value: 3 },
-        { label: "Choice 4", value: 4 },
-    ],
     EMPTY_EXAM_QUESTION: {
         question: "",
         choice_one: "",
         choice_two: "",
         choice_three: "",
         choice_four: "",
-        correct_choice: 1,
+        correct_choice: "",
         media_url: null,
     },
 };
