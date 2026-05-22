@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
-import FileInput from "../common/FileInput";
+import ExamPhotoCapture from "./ExamPhotoCapture";
 import Loading from "../common/Loading";
 import NoContent from "../common/NoContent";
 import { useAppContext } from "../../providers/ProviderAppContainer";
@@ -82,21 +82,19 @@ export default function AssesCandidate() {
                 <li>Only one attempt is allowed unless instructed otherwise by your proctor.</li>
             </ul>
 
-            <FileInput
+            <ExamPhotoCapture
                 label="Identity Card Photo"
-                type="image"
-                capture="environment"
+                facingMode="environment"
                 cdn_url={identityUrl}
                 setCDNUrl={setIdentityUrl}
-                source_accessible={false}
+                disabled={loading}
             />
-            <FileInput
+            <ExamPhotoCapture
                 label="Selfie Photo"
-                type="image"
-                capture="user"
+                facingMode="user"
                 cdn_url={selfieUrl}
                 setCDNUrl={setSelfieUrl}
-                source_accessible={false}
+                disabled={loading}
             />
 
             <div className="flex align-items-start gap-2 border-1 border-gray-300 border-round p-3">

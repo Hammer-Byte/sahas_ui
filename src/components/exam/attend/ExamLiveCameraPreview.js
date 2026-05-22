@@ -1,0 +1,58 @@
+import { useEffect, useRef } from "react";
+import { TEXT_SMALL } from "../../../style";
+
+export default function ExamLiveCameraPreview() {
+    const videoRef = useRef(null);
+    const streamRef = useRef(null);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const startPreview = async () => {
+            if (!navigator.mediaDevices?.getUserMedia) {
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "user", width: { ideal: 320 }, height: { ideal: 240 } },
+                    audio: false,
+                });
+
+                if (cancelled) {
+                    stream.getTracks().forEach((track) => track.stop());
+                    return;
+                }
+
+                streamRef.current = stream;
+
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    await videoRef.current.play();
+                }
+            } catch {
+                // Preview is optional; exam can continue without it.
+            }
+        };
+
+        startPreview();
+
+        return () => {
+            cancelled = true;
+            streamRef.current?.getTracks().forEach((track) => track.stop());
+            streamRef.current = null;
+            if (videoRef.current) {
+                videoRef.current.srcObject = null;
+            }
+        };
+    }, []);
+
+    return (
+        <div className="flex align-items-center justify-content-center gap-2 px-2 py-2 border-bottom-1 border-gray-200 bg-gray-50">
+            <div className="w-2rem h-2rem flex-shrink-0 border-round border-1 border-gray-300 overflow-hidden bg-gray-900">
+                <video ref={videoRef} className="w-full h-full object-cover" playsInline muted autoPlay />
+            </div>
+            <span className={`${TEXT_SMALL} text-color-secondary`}>Assessment is getting supervised</span>
+        </div>
+    );
+}
