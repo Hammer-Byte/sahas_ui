@@ -14,10 +14,12 @@ export default function ExamLiveCameraPreview() {
             }
 
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "user", width: { ideal: 320 }, height: { ideal: 240 } },
-                    audio: false,
-                });
+                let stream;
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+                } catch {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                }
 
                 if (cancelled) {
                     stream.getTracks().forEach((track) => track.stop());
@@ -31,7 +33,7 @@ export default function ExamLiveCameraPreview() {
                     await videoRef.current.play();
                 }
             } catch {
-                // Preview is optional; exam can continue without it.
+                // Optional supervised preview during exam.
             }
         };
 

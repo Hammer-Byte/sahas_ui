@@ -5,15 +5,14 @@ import { uploadMedia } from "../../utils";
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { TEXT_NORMAL, TEXT_SMALL } from "../../style";
 
-export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, setCDNUrl, disabled = false }) {
+export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, setCDNUrl, active = false, disabled = false }) {
     const videoRef = useRef(null);
     const streamRef = useRef(null);
     const { showToast } = useAppContext();
 
-    const [cameraActive, setCameraActive] = useState(false);
-    const [cameraError, setCameraError] = useState();
-    const [uploadProgress, setUploadProgress] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState();
+    const [preview, setPreview] = useState();
+    const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState();
 
     const stopCamera = useCallback(() => {
         streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -21,137 +20,138 @@ export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, 
         if (videoRef.current) {
             videoRef.current.srcObject = null;
         }
-        setCameraActive(false);
     }, []);
 
     useEffect(() => {
         if (cdn_url) {
-            setPreviewUrl(cdn_url);
+            setPreview(cdn_url);
         }
     }, [cdn_url]);
 
-    useEffect(() => () => stopCamera(), [stopCamera]);
-
-    const startCamera = useCallback(async () => {
-        if (disabled) return;
-
-        setCameraError();
-        stopCamera();
-
-        if (!navigator.mediaDevices?.getUserMedia) {
-            setCameraError("Camera is not supported on this device or browser.");
+    useEffect(() => {
+        if (!active || disabled || preview || cdn_url) {
+            stopCamera();
             return;
         }
 
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode },
-                audio: false,
-            });
+        let cancelled = false;
 
-            streamRef.current = stream;
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                await videoRef.current.play();
+        const startCamera = async () => {
+            setError();
+
+            if (!navigator.mediaDevices?.getUserMedia) {
+                setError("Camera not supported.");
+                return;
             }
-            setCameraActive(true);
-        } catch {
-            setCameraError("Camera permission is required. Please allow camera access and try again.");
-        }
-    }, [disabled, facingMode, stopCamera]);
+
+            try {
+                let stream;
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode }, audio: false });
+                } catch {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                }
+
+                if (cancelled) {
+                    stream.getTracks().forEach((track) => track.stop());
+                    return;
+                }
+
+                streamRef.current = stream;
+
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    await videoRef.current.play();
+                }
+            } catch {
+                if (!cancelled) {
+                    setError("Allow camera access to continue.");
+                }
+            }
+        };
+
+        startCamera();
+
+        return () => {
+            cancelled = true;
+            stopCamera();
+        };
+    }, [active, cdn_url, disabled, facingMode, preview, stopCamera]);
 
     const capturePhoto = useCallback(() => {
         const video = videoRef.current;
-        if (!video?.videoWidth) return;
+        if (!video?.videoWidth) {
+            showToast({ severity: "warn", summary: "Please wait", detail: "Camera is loading", life: 2000 });
+            return;
+        }
 
         const canvas = document.createElement("canvas");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext("2d").drawImage(video, 0, 0);
 
-        canvas.toBlob(
-            (blob) => {
-                if (!blob) {
-                    showToast({ severity: "error", summary: "Failed", detail: "Could not capture photo", life: 2000 });
-                    return;
-                }
+        canvas.toBlob((blob) => {
+            if (!blob) return;
 
-                stopCamera();
+            stopCamera();
 
-                const file = new File([blob], `${facingMode}-${Date.now()}.jpg`, { type: "image/jpeg" });
+            const file = new File([blob], `${facingMode}.jpg`, { type: "image/jpeg" });
 
-                uploadMedia({
-                    requestPath: "bucketise/images",
-                    file,
-                    onRequestStart: setUploadProgress,
-                    onRequestFailure: (error) => {
-                        setUploadProgress(false);
-                        showToast({ severity: "error", summary: "Failed", detail: error, life: 2000 });
-                    },
-                    onProgress: setUploadProgress,
-                    onResponseReceieved: ({ cdn_url: uploadedUrl }, responseCode) => {
-                        setUploadProgress(false);
-                        if (uploadedUrl && responseCode === 201) {
-                            setCDNUrl(uploadedUrl);
-                            setPreviewUrl(URL.createObjectURL(file));
-                            showToast({ severity: "success", summary: "Captured", detail: "Photo uploaded", life: 1000 });
-                        } else {
-                            showToast({ severity: "error", summary: "Failed", detail: "Failed to upload photo", life: 2000 });
-                        }
-                    },
-                });
-            },
-            "image/jpeg",
-            0.92,
-        );
+            uploadMedia({
+                requestPath: "bucketise/images",
+                file,
+                onRequestStart: () => setUploading(true),
+                onRequestFailure: (message) => {
+                    setUploading(false);
+                    showToast({ severity: "error", summary: "Failed", detail: message, life: 2000 });
+                },
+                onResponseReceieved: (response, responseCode) => {
+                    setUploading(false);
+                    if (response?.cdn_url && responseCode === 201) {
+                        setCDNUrl(response.cdn_url);
+                        setPreview(URL.createObjectURL(file));
+                    } else {
+                        showToast({ severity: "error", summary: "Failed", detail: "Upload failed", life: 2000 });
+                    }
+                },
+            });
+        }, "image/jpeg");
     }, [facingMode, setCDNUrl, showToast, stopCamera]);
 
-    const clearPhoto = useCallback(() => {
+    const retake = useCallback(() => {
         setCDNUrl(null);
-        setPreviewUrl(null);
-        setCameraError();
+        setPreview(null);
+        setError();
     }, [setCDNUrl]);
 
-    if (uploadProgress) {
+    if (uploading) {
+        return <Loading message={`Saving ${label}`} />;
+    }
+
+    if (preview) {
         return (
-            <div className="border-1 border-gray-300 border-round p-4">
-                <Loading message={`Uploading ${label}${typeof uploadProgress === "number" ? ` ${uploadProgress}%` : ""}`} />
+            <div className="border-1 border-gray-300 border-round p-3 flex flex-column align-items-center gap-2">
+                <span className={`${TEXT_NORMAL} font-semibold`}>{label}</span>
+                <img src={preview} alt={label} className="w-full max-w-15rem border-round" />
+                <Button label="Retake" icon="pi pi-refresh" size="small" severity="secondary" disabled={disabled} onClick={retake} />
+            </div>
+        );
+    }
+
+    if (!active) {
+        return (
+            <div className="border-1 border-gray-300 border-round p-3 opacity-60">
+                <span className={`${TEXT_SMALL} text-color-secondary`}>{label} — complete the step above first</span>
             </div>
         );
     }
 
     return (
-        <div className="border-1 border-gray-300 border-round p-4 flex flex-column gap-3">
+        <div className="border-1 border-gray-300 border-round p-3 flex flex-column align-items-center gap-2">
             <span className={`${TEXT_NORMAL} font-semibold`}>{label}</span>
-            <span className={`${TEXT_SMALL} text-color-secondary`}>Use your device camera — gallery upload is not allowed here.</span>
-
-            {cameraError && <span className={`${TEXT_SMALL} text-red-500`}>{cameraError}</span>}
-
-            {previewUrl && !cameraActive ? (
-                <div className="flex flex-column align-items-center gap-3">
-                    <img src={previewUrl} alt={label} className="w-full max-w-20rem border-round border-1 border-gray-300 object-contain" />
-                    <div className="flex gap-2">
-                        <Button label="Retake" icon="pi pi-refresh" severity="warning" size="small" disabled={disabled} onClick={clearPhoto} />
-                    </div>
-                </div>
-            ) : cameraActive ? (
-                <div className="flex flex-column align-items-center gap-3">
-                    <video ref={videoRef} className="w-full max-w-20rem border-round border-1 border-gray-300" playsInline muted autoPlay />
-                    <div className="flex gap-2">
-                        <Button label="Capture" icon="pi pi-camera" severity="success" size="small" onClick={capturePhoto} />
-                        <Button label="Cancel" icon="pi pi-times" severity="secondary" size="small" outlined onClick={stopCamera} />
-                    </div>
-                </div>
-            ) : (
-                <Button
-                    className="align-self-center"
-                    label={`Open camera — ${label}`}
-                    icon="pi pi-camera"
-                    severity="info"
-                    disabled={disabled}
-                    onClick={startCamera}
-                />
-            )}
+            {error && <span className={`${TEXT_SMALL} text-red-500`}>{error}</span>}
+            <video ref={videoRef} className="w-full max-w-15rem border-round bg-gray-900" playsInline muted autoPlay />
+            <Button label="Take Photo" icon="pi pi-camera" severity="success" size="small" disabled={disabled || !!error} onClick={capturePhoto} />
         </div>
     );
 }
