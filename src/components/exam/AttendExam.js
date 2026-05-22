@@ -6,6 +6,7 @@ import { useAppContext } from "../../providers/ProviderAppContainer";
 import { shuffleQuestions } from "./examQuestionUtils";
 import { buildSubmissionPayload, getSecondsUntilExamEnd } from "./attend/examAttendUtils";
 import ExamAttendHeader from "./attend/ExamAttendHeader";
+import ExamLiveCameraPreview from "./attend/ExamLiveCameraPreview";
 import ExamQuestionStrip from "./attend/ExamQuestionStrip";
 import ExamQuestionPanel from "./attend/ExamQuestionPanel";
 import ExamAttendNavigation from "./attend/ExamAttendNavigation";
@@ -204,6 +205,8 @@ export default function AttendExam() {
             {submitError && <NoContent error={submitError} />}
 
             <ExamAttendHeader exam={exam} secondsUntilEnd={secondsUntilEnd} onTimeUp={onTimeUp} />
+
+            <ExamLiveCameraPreview />
 
             <ExamQuestionStrip
                 questions={questions}
