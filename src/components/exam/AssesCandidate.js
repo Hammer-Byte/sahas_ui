@@ -83,15 +83,17 @@ export default function AssesCandidate() {
             </ul>
 
             <ExamPhotoCapture
-                label="Identity Card Photo"
+                label="Identity Card"
                 facingMode="environment"
+                active={!identityUrl}
                 cdn_url={identityUrl}
                 setCDNUrl={setIdentityUrl}
                 disabled={loading}
             />
             <ExamPhotoCapture
-                label="Selfie Photo"
+                label="Selfie"
                 facingMode="user"
+                active={!!identityUrl && !selfieUrl}
                 cdn_url={selfieUrl}
                 setCDNUrl={setSelfieUrl}
                 disabled={loading}
