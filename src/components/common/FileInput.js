@@ -5,7 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { applyToClipBoard } from "../../utils";
 
-export default function FileInput({ className, label, type, cdn_url, setCDNUrl, disabled, source_accessible = true }) {
+export default function FileInput({ className, label, type, cdn_url, setCDNUrl, disabled, source_accessible = true, capture }) {
     const [preview, setPreview] = useState();
 
     useEffect(() => {
@@ -17,7 +17,7 @@ export default function FileInput({ className, label, type, cdn_url, setCDNUrl, 
             {!!preview ? (
                 <Preview type={type} disabled={disabled} preview={preview} setPreview={setPreview} setCDNUrl={setCDNUrl} label={label} />
             ) : (
-                <PlaceHolder disabled={disabled} label={label} setCDNUrl={setCDNUrl} setPreview={setPreview} type={type} />
+                <PlaceHolder disabled={disabled} label={label} setCDNUrl={setCDNUrl} setPreview={setPreview} type={type} capture={capture} />
             )}
 
             {!!source_accessible && (

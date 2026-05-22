@@ -5,10 +5,9 @@ import { Tag } from "primereact/tag";
 import TabHeader from "../common/TabHeader";
 import Loading from "../common/Loading";
 import NoContent from "../common/NoContent";
-import Timer from "../common/Timer";
 import ExamSeriesCard from "./ExamSeriesCard";
 import ExamCard from "./ExamCard";
-import { getExamSeriesStatus, getSecondsUntil, shouldShowCountdownUntilStart } from "./examSeriesStatus";
+import { getExamSeriesStatus } from "./examSeriesStatus";
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { getReadableDate } from "../../utils";
 import { TEXT_LARGE, TEXT_NORMAL, TEXT_SMALL } from "../../style";
@@ -21,7 +20,6 @@ export default function ExamSeriesDetail() {
     const [examSeries, setExamSeries] = useState();
     const [loading, setLoading] = useState();
     const [error, setError] = useState();
-    const [timerKey, setTimerKey] = useState(0);
     const [enrolling, setEnrolling] = useState();
 
     const loadExamSeries = useCallback(() => {
@@ -53,16 +51,14 @@ export default function ExamSeriesDetail() {
         [examSeries],
     );
 
-    const secondsUntilStart = useMemo(() => getSecondsUntil({ date: examSeries?.start_at }), [examSeries?.start_at, timerKey]);
-
-    const onCountdownComplete = useCallback(() => {
-        setTimerKey((prev) => prev + 1);
-        loadExamSeries();
-    }, [loadExamSeries]);
-
     const showResult = useCallback(() => {
         showToast({ severity: "info", summary: "Result", detail: "Exam series result will be available here.", life: 3000 });
     }, [showToast]);
+
+    const checkMerit = useCallback(() => {
+        if (!examSeries?.id) return;
+        navigate(`/exam-series/${examSeries.id}/merit`);
+    }, [examSeries?.id, navigate]);
 
     const enrollExam = useCallback(() => {
         if (!examSeries?.id) return;
@@ -96,8 +92,6 @@ export default function ExamSeriesDetail() {
         });
     }, [examSeries?.id, examSeries, navigate, requestAPI, showToast]);
 
-    const showCountdown = shouldShowCountdownUntilStart(secondsUntilStart);
-
     return (
         <div className="flex flex-column flex-1 min-h-0 overflow-hidden">
             <TabHeader
@@ -119,23 +113,23 @@ export default function ExamSeriesDetail() {
                     <>
                         <ExamSeriesCard {...examSeries} />
 
+                        {!!examSeries.enrolled && (
+                            <span
+                                className={`${TEXT_SMALL} text-center p-2 border-round border-1 border-green-300 bg-green-100 text-green-800 flex align-items-center justify-content-center gap-2 w-full`}
+                            >
+                                <i className="pi pi-check-circle" aria-hidden />
+                                You have already enrolled in this exam series and can appear for exams.
+                            </span>
+                        )}
+
                         {seriesStatus?.key === "upcoming" && (
                             <div className="flex flex-column align-items-center gap-3 py-2">
-                                {showCountdown ? (
-                                    <Timer
-                                        key={timerKey}
-                                        totalSeconds={secondsUntilStart}
-                                        tagValue="Starts in"
-                                        onTimeUp={onCountdownComplete}
-                                    />
-                                ) : (
-                                    <div className="flex flex-column align-items-center gap-2">
-                                        <span className={`${TEXT_LARGE} font-semibold text-primary`}>
-                                            {getReadableDate({ date: examSeries.start_at })}
-                                        </span>
-                                        <Tag icon="pi pi-calendar" severity="info" value="Starts on" pt={{ value: { className: TEXT_SMALL } }} />
-                                    </div>
-                                )}
+                                <div className="flex flex-column align-items-center gap-2">
+                                    <span className={`${TEXT_LARGE} font-semibold text-primary`}>
+                                        {getReadableDate({ date: examSeries.start_at })}
+                                    </span>
+                                    <Tag icon="pi pi-calendar" severity="info" value="Series starts on" pt={{ value: { className: TEXT_SMALL } }} />
+                                </div>
                                 {!examSeries.enrolled && (
                                     <Button
                                         label="Enroll Exam Series"
@@ -155,13 +149,25 @@ export default function ExamSeriesDetail() {
                         )}
 
                         {seriesStatus?.key === "finished" && (
-                            <Button
-                                className="align-self-center"
-                                label="Show Result"
-                                icon="pi pi-chart-bar"
-                                severity="success"
-                                onClick={showResult}
-                            />
+                            <div className="flex flex-column align-items-center gap-3">
+                                <Button
+                                    className="align-self-center"
+                                    label="Show Result"
+                                    icon="pi pi-chart-bar"
+                                    severity="success"
+                                    onClick={showResult}
+                                />
+                                {!!examSeries.enrolled && (
+                                    <Button
+                                        className="align-self-center"
+                                        label="Check Merit"
+                                        icon="pi pi-star"
+                                        severity="success"
+                                        outlined
+                                        onClick={checkMerit}
+                                    />
+                                )}
+                            </div>
                         )}
 
                         <div className="flex flex-column gap-2">
@@ -174,6 +180,7 @@ export default function ExamSeriesDetail() {
                                         subject_title={exam.subject_title}
                                         start_at={exam.start_at}
                                         end_at={exam.end_at}
+                                        enrolled={!!examSeries.enrolled}
                                     />
                                 ))
                             ) : (
