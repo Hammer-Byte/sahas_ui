@@ -176,6 +176,15 @@ const APPLICATION_CONSTANTS = {
         DELETE_STREAM_SELECTION_QUESTION_CATEGORY: "DELETE_STREAM_SELECTION_QUESTION_CATEGORY",
     },
     RUPEE: " ₹",
+    EMPTY_EXAM_QUESTION: {
+        question: "",
+        choice_one: "",
+        choice_two: "",
+        choice_three: "",
+        choice_four: "",
+        correct_choice: "",
+        media_url: null,
+    },
 };
 
 module.exports = APPLICATION_CONSTANTS;

@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useInterval } from "primereact/hooks";
-import { Knob } from "primereact/knob";
 import { Tag } from "primereact/tag";
+import { TEXT_LARGE } from "../../style";
 
-export default function Timer({ minutes = 0, onTimeUp, className }) {
-    const totalSeconds = minutes * 60;
+export default function Timer({ minutes = 0, totalSeconds: totalSecondsProp, onTimeUp, className, tagValue = "Time Remaining" }) {
+    const totalSeconds = totalSecondsProp ?? minutes * 60;
     const [seconds, setSeconds] = useState(totalSeconds);
-    const [active, setActive] = useState(true);
+    const [active, setActive] = useState(totalSeconds > 0);
+
+    useEffect(() => {
+        setSeconds(totalSeconds);
+        setActive(totalSeconds > 0);
+    }, [totalSeconds]);
 
     useInterval(
         () => {
@@ -21,34 +26,31 @@ export default function Timer({ minutes = 0, onTimeUp, className }) {
         active,
     );
 
-    if (!minutes) return null;
+    if (!totalSeconds) return null;
 
-    // Helper to format 00:00
     const formatTime = (total) => {
-        const mins = Math.floor(total / 60);
+        const hours = Math.floor(total / 3600);
+        const mins = Math.floor((total % 3600) / 60);
         const secs = total % 60;
-        return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+        const pad = (n) => (n < 10 ? `0${n}` : `${n}`);
+
+        if (hours > 0) {
+            return `${hours}:${pad(mins)}:${pad(secs)}`;
+        }
+
+        return `${mins}:${pad(secs)}`;
     };
 
-    // Determine color based on time remaining (Red when under 20%)
     const isRunningLow = seconds < totalSeconds * 0.2;
 
     return (
         <div
-            className={`flex flex-column align-items-center gap-2 ${className} ${!!isRunningLow && `fadeout animation-duration-1000 animation-iteration-infinite`}`}
+            className={`flex flex-column align-items-center gap-2 ${className} ${isRunningLow ? "fadeout animation-duration-1000 animation-iteration-infinite" : ""}`}
         >
-            <Knob
-                value={seconds}
-                max={totalSeconds}
-                readOnly
-                size={80}
-                valueTemplate={formatTime(seconds)}
-                valueColor={isRunningLow ? "var(--red-500)" : "var(--primary-color)"}
-                rangeColor="var(--surface-border)"
-                strokeWidth={8}
-            />
-
-            <Tag icon="pi pi-clock" severity={isRunningLow ? "danger" : "info"} value={isRunningLow ? "Hurry up!" : "Time Remaining"} className="px-3" />
+            <span className={`${TEXT_LARGE} font-bold font-mono ${isRunningLow ? "text-red-500" : "text-primary"}`}>
+                {formatTime(seconds)}
+            </span>
+            <Tag icon="pi pi-clock" severity={isRunningLow ? "danger" : "info"} value={isRunningLow ? "Hurry up!" : tagValue} className="px-3" />
         </div>
     );
 }

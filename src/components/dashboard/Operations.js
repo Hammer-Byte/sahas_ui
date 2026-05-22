@@ -34,9 +34,9 @@ export default function Operations({ className }) {
                         path: `/invoices`,
                     },
                     {
-                        title: "Exam",
+                        title: "Exam Series",
                         icon: "pi-pencil",
-                        path: "/exam",
+                        path: "/exam-series/list",
                     },
 
                     {
@@ -98,7 +98,7 @@ export default function Operations({ className }) {
                         title: "Exams",
                         icon: "pi-question",
                         required_authority: AUTHORITIES.USE_PAGE_MANAGE_EXAMS,
-                        path: "/manage-exams",
+                        path: "/manage-exam-series/exam-series",
                     },
                 ],
             },
@@ -129,6 +129,11 @@ export default function Operations({ className }) {
                         icon: "pi-money-bill",
                         required_authority: AUTHORITIES.USE_PAGE_FINANCIALS,
                         path: "/revenue",
+                    },
+                    {
+                        title: "Exam",
+                        icon: "pi-pencil",
+                        path: "/manage-exam-series/exam-series",
                     },
 
                     {
