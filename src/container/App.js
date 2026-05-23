@@ -57,6 +57,7 @@ import StreamSelectionTest from "../pages/StreamSelectionTest";
 import About from "../components/stream_selection_test/About";
 import PaymentGatewayPayLoad from "../pages/PaymentGatewayPayLoad";
 import ManageExamSeries from "../pages/ManageExamSeries";
+import ExamSeriesEnrollments from "../components/manage_exams/ExamSeriesEnrollments";
 import ExamSeries from "../components/manage_exams/ExamSeries";
 import ManageSeriesExams from "../components/manage_exams/Exams";
 import ExamQuestions from "../components/manage_exams/ExamQuestions";
@@ -214,6 +215,7 @@ export default function App() {
                         <Route path="/enroll/:courseId" element={<EnrollPage />} />
                         <Route path="/manage-exam-series" element={<ManageExamSeries />}>
                             <Route path="exam-series" element={<ExamSeries />} />
+                            <Route path="enrollments/:id" element={<ExamSeriesEnrollments />} />
                             <Route path=":id/exams" element={<ManageSeriesExams />} />
                             <Route path="exams/:id/questions" element={<ExamQuestions />} />
                         </Route>
