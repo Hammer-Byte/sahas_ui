@@ -64,6 +64,7 @@ import StudentExamSeries from "../pages/ExamSeries";
 import ExamSeriesList from "../components/exam_series/ExamSeriesList";
 import ExamSeriesDetail from "../components/exam_series/ExamSeriesDetail";
 import ExamSeriesMerit from "../components/exam_series/ExamSeriesMerit";
+import ExamSeriesResult from "../components/exam_series/ExamSeriesResult";
 import ExamSeriesPaidEnrollment from "../components/exam_series/ExamSeriesPaidEnrollment";
 import AttendExamLayout from "../pages/AttendExamLayout";
 import AttendExam from "../components/exam/AttendExam";
@@ -163,6 +164,7 @@ export default function App() {
                             <Route path="list" element={<ExamSeriesList />} />
                             <Route path="paid-enrollment/:id" element={<ExamSeriesPaidEnrollment />} />
                             <Route path=":id/merit" element={<ExamSeriesMerit />} />
+                            <Route path=":id/result" element={<ExamSeriesResult />} />
                             <Route path=":id" element={<ExamSeriesDetail />} />
                         </Route>
                         <Route path="/exams/:examId" element={<AttendExamLayout />}>

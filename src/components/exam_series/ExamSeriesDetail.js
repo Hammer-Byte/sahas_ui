@@ -52,8 +52,9 @@ export default function ExamSeriesDetail() {
     );
 
     const showResult = useCallback(() => {
-        showToast({ severity: "info", summary: "Result", detail: "Exam series result will be available here.", life: 3000 });
-    }, [showToast]);
+        if (!examSeries?.id) return;
+        navigate(`/exam-series/${examSeries.id}/result`);
+    }, [examSeries?.id, navigate]);
 
     const checkMerit = useCallback(() => {
         if (!examSeries?.id) return;
