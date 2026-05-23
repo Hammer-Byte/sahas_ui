@@ -51,7 +51,18 @@ export default function Series({ id, title, course_title, course_id, fees, start
                 Updated {getReadableDate({ date: updated_at })}
             </span>
 
-            <div className="flex align-items-center justify-content-end gap-2 mt-1">
+            <div className="flex align-items-center justify-content-end gap-2 mt-1 flex-wrap">
+                <Button
+                    label="Enrollments"
+                    icon="pi pi-users"
+                    severity="info"
+                    size="small"
+                    outlined
+                    onClick={() => navigate(`/manage-exam-series/enrollments/${id}`)}
+                    pt={{
+                        label: { className: TEXT_SMALL },
+                    }}
+                />
                 <Button
                     label="Manage Series"
                     icon="pi pi-list"
