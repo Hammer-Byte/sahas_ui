@@ -98,7 +98,7 @@ export default function ExamSeriesEnrollments() {
     );
 
     return (
-        <div className="flex flex-column flex-1 min-h-0 overflow-hidden">
+        <div className="flex flex-column flex-1 min-h-0 h-full overflow-hidden">
             <TabHeader
                 className="px-3 py-3"
                 title="Exam Series Enrollments"
@@ -110,7 +110,7 @@ export default function ExamSeriesEnrollments() {
                     <Button key="back" icon="pi pi-arrow-left" rounded text onClick={() => navigate("/manage-exam-series/exam-series")} />,
                 ]}
             />
-            <div className="flex-1 min-h-0 px-3 pb-2 overflow-y-scroll flex flex-column gap-2">
+            <div className="flex-1 min-h-0 px-3 pb-2 overflow-y-auto flex flex-column gap-2">
                 {loading ? (
                     <Loading message="Loading Enrollments" />
                 ) : error ? (
