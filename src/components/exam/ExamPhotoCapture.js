@@ -8,12 +8,12 @@ import { TEXT_NORMAL, TEXT_SMALL } from "../../style";
 export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, setCDNUrl, active = false, disabled = false }) {
     const videoRef = useRef(null);
     const streamRef = useRef(null);
+    const cameraRequestIdRef = useRef(0);
     const { showToast } = useAppContext();
 
     const [preview, setPreview] = useState();
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState();
-    const [cameraRetry, setCameraRetry] = useState(0);
 
     const stopCamera = useCallback(() => {
         streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -23,6 +23,43 @@ export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, 
         }
     }, []);
 
+    const startCamera = useCallback(async () => {
+        const requestId = ++cameraRequestIdRef.current;
+
+        setError();
+        stopCamera();
+
+        if (!navigator.mediaDevices?.getUserMedia) {
+            setError("Camera not supported.");
+            return;
+        }
+
+        try {
+            let stream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode }, audio: false });
+            } catch {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            }
+
+            if (requestId !== cameraRequestIdRef.current) {
+                stream.getTracks().forEach((track) => track.stop());
+                return;
+            }
+
+            streamRef.current = stream;
+
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                await videoRef.current.play();
+            }
+        } catch {
+            if (requestId === cameraRequestIdRef.current) {
+                setError("Allow camera access to continue.");
+            }
+        }
+    }, [facingMode, stopCamera]);
+
     useEffect(() => {
         if (cdn_url) {
             setPreview(cdn_url);
@@ -31,53 +68,18 @@ export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, 
 
     useEffect(() => {
         if (!active || disabled || preview || cdn_url) {
+            cameraRequestIdRef.current += 1;
             stopCamera();
             return;
         }
 
-        let cancelled = false;
-
-        const startCamera = async () => {
-            setError();
-
-            if (!navigator.mediaDevices?.getUserMedia) {
-                setError("Camera not supported.");
-                return;
-            }
-
-            try {
-                let stream;
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode }, audio: false });
-                } catch {
-                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                }
-
-                if (cancelled) {
-                    stream.getTracks().forEach((track) => track.stop());
-                    return;
-                }
-
-                streamRef.current = stream;
-
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    await videoRef.current.play();
-                }
-            } catch {
-                if (!cancelled) {
-                    setError("Allow camera access to continue.");
-                }
-            }
-        };
-
         startCamera();
 
         return () => {
-            cancelled = true;
+            cameraRequestIdRef.current += 1;
             stopCamera();
         };
-    }, [active, cameraRetry, cdn_url, disabled, facingMode, preview, stopCamera]);
+    }, [active, cdn_url, disabled, facingMode, preview, startCamera, stopCamera]);
 
     const capturePhoto = useCallback(() => {
         const video = videoRef.current;
@@ -159,7 +161,7 @@ export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, 
                         size="small"
                         severity="secondary"
                         disabled={disabled}
-                        onClick={() => setCameraRetry((n) => n + 1)}
+                        onClick={startCamera}
                     />
                 </div>
             )}
