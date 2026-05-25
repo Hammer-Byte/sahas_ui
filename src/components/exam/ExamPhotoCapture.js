@@ -13,6 +13,7 @@ export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, 
     const [preview, setPreview] = useState();
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState();
+    const [cameraRetry, setCameraRetry] = useState(0);
 
     const stopCamera = useCallback(() => {
         streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -76,7 +77,7 @@ export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, 
             cancelled = true;
             stopCamera();
         };
-    }, [active, cdn_url, disabled, facingMode, preview, stopCamera]);
+    }, [active, cameraRetry, cdn_url, disabled, facingMode, preview, stopCamera]);
 
     const capturePhoto = useCallback(() => {
         const video = videoRef.current;
@@ -149,7 +150,19 @@ export default function ExamPhotoCapture({ label, facingMode = "user", cdn_url, 
     return (
         <div className="border-1 border-gray-300 border-round p-3 flex flex-column align-items-center gap-2">
             <span className={`${TEXT_NORMAL} font-semibold`}>{label}</span>
-            {error && <span className={`${TEXT_SMALL} text-red-500`}>{error}</span>}
+            {error && (
+                <div className="flex flex-column align-items-center gap-2">
+                    <span className={`${TEXT_SMALL} text-red-500`}>{error}</span>
+                    <Button
+                        label="Enable camera"
+                        icon="pi pi-refresh"
+                        size="small"
+                        severity="secondary"
+                        disabled={disabled}
+                        onClick={() => setCameraRetry((n) => n + 1)}
+                    />
+                </div>
+            )}
             <video ref={videoRef} className="w-full max-w-15rem border-round bg-gray-900" playsInline muted autoPlay />
             <Button label="Take Photo" icon="pi pi-camera" severity="success" size="small" disabled={disabled || !!error} onClick={capturePhoto} />
         </div>
