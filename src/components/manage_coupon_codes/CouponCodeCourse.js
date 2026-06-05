@@ -59,7 +59,7 @@ export default function CouponCodeCourse({
     }, [id, requestAPI, setCouponCodeCourses, showToast]);
 
     return (
-        <div className={`flex gap-3 align-items-center border-1 border-gray-300 border-round py-2 px-3 overflow-hidden `}>
+        <div className={`flex gap-3 align-items-center border-1 border-gray-300 border-round py-2 px-3`}>
             <div className="flex flex-column flex-1 gap-2">
                 <span className={`${TEXT_NORMAL} font-semibold`}>
                     {index + 1}. {title}

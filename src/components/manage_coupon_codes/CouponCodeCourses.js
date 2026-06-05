@@ -48,7 +48,7 @@ export default function CouponCodeCourses() {
     }, [couponCodeId, requestAPI]);
 
     return (
-        <div className="flex-1 overflow-hidden flex flex-column">
+        <div className="flex-1 overflow-hidden flex flex-column min-h-0">
             <TabHeader
                 className={"p-3 bg-gray-900 text-white"}
                 title={`Assign Courses - ${couponCode?.code}`}
@@ -71,7 +71,7 @@ export default function CouponCodeCourses() {
                 ]}
             />
 
-            <div className="p-2 flex flex-column gap-2">
+            <div className="p-2 flex flex-column gap-2 flex-1 h-full min-h-0 overflow-y-scroll">
                 {loading ? (
                     <Loading />
                 ) : error ? (
