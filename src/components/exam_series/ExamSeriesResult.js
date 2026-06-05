@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
 import { TabPanel, TabView } from "primereact/tabview";
+import { classNames } from "primereact/utils";
 import TabHeader from "../common/TabHeader";
 import Loading from "../common/Loading";
 import NoContent from "../common/NoContent";
@@ -76,13 +77,18 @@ export default function ExamSeriesResult() {
                 actionItems={[<Button key="back" icon="pi pi-arrow-left" rounded text onClick={() => navigate(`/exam-series/${id}`)} />]}
             />
 
-            <div className="flex-1 min-h-0 overflow-hidden px-2 pb-2">
+            <div className="flex-1 min-h-0 flex flex-column px-2 pb-2">
                 {loading ? (
                     <Loading message="Loading Result" />
                 ) : error ? (
                     <NoContent error={error} />
                 ) : result?.exams?.length ? (
-                    <TabView className="h-full" panelContainerClassName="px-1 overflow-y-auto">
+                    <TabView
+                        pt={{
+                            root: classNames("overflow-hidden flex flex-column flex-1 min-h-0"),
+                            panelcontainer: classNames("px-1 flex-1 overflow-y-auto"),
+                        }}
+                    >
                         {result.exams.map((exam) => (
                             <TabPanel
                                 key={exam.id}
