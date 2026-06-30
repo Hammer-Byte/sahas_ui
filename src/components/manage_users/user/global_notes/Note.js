@@ -9,7 +9,7 @@ import HasRequiredAuthority from "../../../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../../../constants";
 import { Badge } from "primereact/badge";
 
-export default function Note({ id, created_by_full_name, created_at, note, type, setNotes }) {
+export default function Note({ id, created_by_full_name, created_at, note, type, setNotes, setDialogEditGlobalNote }) {
     const { requestAPI, showToast } = useAppContext();
 
     const [loading, setLoading] = useState();
@@ -55,7 +55,25 @@ export default function Note({ id, created_by_full_name, created_at, note, type,
             <div className="flex align-items-center gap-2">
                 {type && <Badge severity={getNoteSeverityByType(type)} value={type} />}
 
-                <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_INQUIRY_NOTE}>
+                <HasRequiredAuthority requiredAuthority={AUTHORITIES.UPDATE_GLOBAL_NOTE}>
+                    <Button
+                        className="w-2rem h-2rem"
+                        icon="pi pi-pencil"
+                        rounded
+                        severity="warning"
+                        onClick={() =>
+                            setDialogEditGlobalNote((prev) => ({
+                                ...prev,
+                                visible: true,
+                                id,
+                                note,
+                                type,
+                            }))
+                        }
+                    />
+                </HasRequiredAuthority>
+
+                <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_GLOBAL_NOTE}>
                     <ProgressiveControl
                         loading={loading}
                         control={

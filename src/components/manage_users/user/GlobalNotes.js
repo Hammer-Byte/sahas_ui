@@ -9,6 +9,7 @@ import { AUTHORITIES } from "../../../constants";
 import NoContent from "../../common/NoContent";
 import Loading from "../../common/Loading";
 import DialogAddGlobalNote from "./global_notes/DialogAddGlobalNote";
+import DialogEditGlobalNote from "./global_notes/DialogEditGlobalNote";
 import Note from "./global_notes/Note";
 
 export default function GlobalNotes() {
@@ -22,6 +23,9 @@ export default function GlobalNotes() {
 
     const [globalNotes, setGlobalNotes] = useState();
     const [dialogAddGlobalNote, setDialogAddGlobalNote] = useState();
+    const [dialogEditGlobalNote, setDialogEditGlobalNote] = useState({
+        visible: false,
+    });
 
     const [error, setError] = useState();
     const [loading, setLoading] = useState();
@@ -44,6 +48,10 @@ export default function GlobalNotes() {
 
     const closeDialogAddGlobalNote = useCallback(() => {
         setDialogAddGlobalNote((prev) => ({ ...prev, visible: false }));
+    }, []);
+
+    const closeDialogEditGlobalNote = useCallback(() => {
+        setDialogEditGlobalNote((prev) => ({ ...prev, visible: false }));
     }, []);
 
     return (
@@ -75,13 +83,16 @@ export default function GlobalNotes() {
                 ) : error ? (
                     <NoContent error={error} />
                 ) : globalNotes?.length ? (
-                    globalNotes.map((note) => <Note key={note?.id} {...note} setNotes={setGlobalNotes} />)
+                    globalNotes.map((note) => <Note key={note?.id} {...note} setNotes={setGlobalNotes} setDialogEditGlobalNote={setDialogEditGlobalNote} />)
                 ) : (
                     <NoContent error={"No Global Notes Found"} />
                 )}
             </div>
 
             {dialogAddGlobalNote?.visible && <DialogAddGlobalNote {...dialogAddGlobalNote} setGlobalNotes={setGlobalNotes} />}
+            {dialogEditGlobalNote?.visible && (
+                <DialogEditGlobalNote closeDialog={closeDialogEditGlobalNote} setGlobalNotes={setGlobalNotes} {...dialogEditGlobalNote} />
+            )}
         </div>
     );
 }
