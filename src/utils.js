@@ -26,8 +26,6 @@ export async function generateDeviceFingerprint() {
 
     const screenRes = window.screen.width + window.screen.height;
 
-    const webglInfo = getWebGLFingerprint();
-
     const hardwareFingerPrint = await sha256(
         [
             screenRes,
@@ -37,30 +35,10 @@ export async function generateDeviceFingerprint() {
             navigator.platform,
             navigator.maxTouchPoints,
             Intl.DateTimeFormat().resolvedOptions().timeZone,
-            webglInfo.vendor,
-            webglInfo.renderer,
         ].join("::"),
     );
 
     return btoa(unescape(encodeURIComponent(`${type} - ${brand} ${model} - ${os}(${osVersion}) - ${screenRes} | ${hardwareFingerPrint}`)));
-}
-
-function getWebGLFingerprint() {
-    const canvas = document.createElement("canvas");
-    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-
-    let vendor = "unknown";
-    let renderer = "unknown";
-
-    if (gl) {
-        const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-        if (debugInfo) {
-            vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-            renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-        }
-    }
-
-    return { vendor, renderer };
 }
 
 async function sha256(input) {
