@@ -5,6 +5,7 @@ import IconButton from "../../../common/IconButton";
 import { useCallback, useState } from "react";
 import { useAppContext } from "../../../../providers/ProviderAppContainer";
 import ProgressiveControl from "../../../common/ProgressiveControl";
+import ConfirmationWrapper from "../../../common/ConfirmationWrapper";
 import HasRequiredAuthority from "../../../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../../../constants";
 import { Divider } from "primereact/divider";
@@ -106,7 +107,9 @@ export default function EnrollmentHead({
                                     aria-label="Edit"
                                     color={"text-orange-500"}
                                 />
-                                <IconButton icon={"pi-trash"} onClick={deleteEnrollment} rounded severity="danger" aria-label="Delete" color={"text-red-500"} />
+                                <ConfirmationWrapper action={deleteEnrollment}>
+                                    <IconButton icon={"pi-trash"} rounded severity="danger" aria-label="Delete" color={"text-red-500"} />
+                                </ConfirmationWrapper>
                             </div>
                         }
                     />

@@ -1,6 +1,7 @@
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { useCallback, useState } from "react";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import { getReadableDate } from "../../utils";
 import DialogEditChapterType from "./DialogEditChapterType";
 import IconButton from "../common/IconButton";
@@ -80,7 +81,14 @@ export default function ChapterType({ id, title, setChapterTypes, requires_enrol
 
             {!updatingViewIndex && (
                 <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_CHAPTER_TYPES}>
-                    <ProgressiveControl loading={deleting} control={<IconButton icon={`pi-trash`} color={"text-white"} onClick={deleteChapterType} />} />
+                    <ProgressiveControl
+                        loading={deleting}
+                        control={
+                            <ConfirmationWrapper action={deleteChapterType}>
+                                <IconButton icon={`pi-trash`} color={"text-white"} />
+                            </ConfirmationWrapper>
+                        }
+                    />
                 </HasRequiredAuthority>
             )}
             {dialogEditChapterType?.visible && <DialogEditChapterType {...dialogEditChapterType} />}

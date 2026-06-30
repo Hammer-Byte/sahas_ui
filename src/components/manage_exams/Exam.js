@@ -6,6 +6,7 @@ import { getReadableDate } from "../../utils";
 import { ICON_SIZE, TEXT_NORMAL, TEXT_SMALL } from "../../style";
 import IconButton from "../common/IconButton";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import DialogEditExam from "./DialogEditExam";
 
 export default function Exam({
@@ -84,7 +85,9 @@ export default function Exam({
                                     }))
                                 }
                             />
-                            <IconButton color="text-red-500" icon="pi pi-trash" rounded onClick={deleteExam} className={ICON_SIZE} />
+                                <ConfirmationWrapper action={deleteExam}>
+                                    <IconButton color="text-red-500" icon="pi pi-trash" rounded className={ICON_SIZE} />
+                                </ConfirmationWrapper>
                         </div>
                     }
                 />

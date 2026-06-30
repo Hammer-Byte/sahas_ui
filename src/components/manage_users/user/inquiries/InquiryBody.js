@@ -8,6 +8,7 @@ import DialogManageInquiryNotes from "./DialogManageInquiryNotes";
 
 import { InputSwitch } from "primereact/inputswitch";
 import ProgressiveControl from "../../../common/ProgressiveControl";
+import ConfirmationWrapper from "../../../common/ConfirmationWrapper";
 import HasRequiredAuthority from "../../../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../../../constants";
 
@@ -80,7 +81,11 @@ export default function InquiryBody({ setInquiries, ...props }) {
             <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_INQUIRY}>
                 <ProgressiveControl
                     loading={deleting}
-                    control={<Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" onClick={deleteInquiry} />}
+                    control={
+                        <ConfirmationWrapper action={deleteInquiry}>
+                            <Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" />
+                        </ConfirmationWrapper>
+                    }
                 />
             </HasRequiredAuthority>
 

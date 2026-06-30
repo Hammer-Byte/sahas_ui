@@ -1,6 +1,7 @@
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { useCallback, useState } from "react";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import { getReadableDate } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import IconButton from "../common/IconButton";
@@ -81,7 +82,14 @@ export default function Chapter({ id, title, test_attainable, test_questions_poo
 
             <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_CHAPTERS}>
                 {!updatingViewIndex && (
-                    <ProgressiveControl loading={deleting} control={<IconButton icon={"pi-trash"} color={"text-red-500"} onClick={deleteChapter} />} />
+                    <ProgressiveControl
+                        loading={deleting}
+                        control={
+                            <ConfirmationWrapper action={deleteChapter}>
+                                <IconButton icon={"pi-trash"} color={"text-red-500"} />
+                            </ConfirmationWrapper>
+                        }
+                    />
                 )}
             </HasRequiredAuthority>
         </div>

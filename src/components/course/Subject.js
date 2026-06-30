@@ -1,6 +1,7 @@
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { useCallback, useState } from "react";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import { useNavigate } from "react-router-dom";
 import { getReadableDate } from "../../utils";
 import IconButton from "../common/IconButton";
@@ -90,7 +91,11 @@ export default function Subject({
                 {!updatingViewIndex && (
                     <ProgressiveControl
                         loading={deleting}
-                        control={<IconButton icon={`pi-trash`} color={background_color ? "text-white" : "text-red-500"} onClick={deleteSubject} />}
+                        control={
+                            <ConfirmationWrapper action={deleteSubject}>
+                                <IconButton icon={`pi-trash`} color={background_color ? "text-white" : "text-red-500"} />
+                            </ConfirmationWrapper>
+                        }
                     />
                 )}
             </HasRequiredAuthority>

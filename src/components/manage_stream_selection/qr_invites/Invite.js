@@ -1,6 +1,7 @@
 import QRCode from "react-qr-code";
 import { getReadableDate } from "../../../utils";
 import ProgressiveControl from "../../common/ProgressiveControl";
+import ConfirmationWrapper from "../../common/ConfirmationWrapper";
 import { useCallback, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import HasRequiredAuthority from "../../dependencies/HasRequiredAuthority";
@@ -100,7 +101,11 @@ export default function Invite({ id, title, active, updated_at, setDialogEditInv
                     <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_STREAM_SELECTION_TEST_INVITE}>
                         <ProgressiveControl
                             loading={loading}
-                            control={<IconButton icon={"pi-trash"} color={"text-red-500"} className={ICON_SIZE} onClick={deleteInvite} />}
+                            control={
+                                <ConfirmationWrapper action={deleteInvite}>
+                                    <IconButton icon={"pi-trash"} color={"text-red-500"} className={ICON_SIZE} />
+                                </ConfirmationWrapper>
+                            }
                         />
                     </HasRequiredAuthority>
                 </div>

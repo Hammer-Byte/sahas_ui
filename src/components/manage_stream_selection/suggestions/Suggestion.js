@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useAppContext } from "../../../providers/ProviderAppContainer";
 import { ICON_SIZE, TEXT_NORMAL } from "../../../style";
 import ProgressiveControl from "../../common/ProgressiveControl";
+import ConfirmationWrapper from "../../common/ConfirmationWrapper";
 import IconButton from "../../common/IconButton";
 import { useDispatch } from "react-redux";
 import { deleteStreamSelectionSuggestion } from "../../../redux/sliceTemplateConfig";
@@ -62,7 +63,9 @@ export default function Suggestion({ id, title, pdf, updatingViewIndex, setDialo
                                     }))
                                 }
                             />
-                            <IconButton color={"text-red-500"} icon="pi pi-trash" rounded onClick={deleteSuggestion} className={ICON_SIZE} />
+                            <ConfirmationWrapper action={deleteSuggestion}>
+                                <IconButton color={"text-red-500"} icon="pi pi-trash" rounded className={ICON_SIZE} />
+                            </ConfirmationWrapper>
                         </div>
                     }
                 />

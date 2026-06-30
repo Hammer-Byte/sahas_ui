@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { getReadableDate } from "../../utils";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import DialogEditCouponCode from "./DialogEditCouponCode";
 import { useNavigate } from "react-router-dom";
 import HasRequiredAuthority from "../dependencies/HasRequiredAuthority";
@@ -79,7 +80,14 @@ export default function CouponCode({ id, code, active, updated_at, setCouponCode
 
             {
                 <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_COUPON_CODE}>
-                    <ProgressiveControl loading={deleting} control={<i className={`pi pi-trash `} onClick={deleteCouponCode}></i>} />
+                    <ProgressiveControl
+                        loading={deleting}
+                        control={
+                            <ConfirmationWrapper action={deleteCouponCode}>
+                                <i className="pi pi-trash" />
+                            </ConfirmationWrapper>
+                        }
+                    />
                 </HasRequiredAuthority>
             }
             {dialogEditCouponCode?.visible && <DialogEditCouponCode {...dialogEditCouponCode} />}

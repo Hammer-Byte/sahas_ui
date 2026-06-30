@@ -1,6 +1,7 @@
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { useCallback, useState } from "react";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import { useNavigate } from "react-router-dom";
 import IconButton from "../common/IconButton";
 import HasRequiredAuthority from "../dependencies/HasRequiredAuthority";
@@ -97,7 +98,14 @@ export default function Course({
                 </HasRequiredAuthority>
                 <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_COURSE}>
                     {!updatingViewIndex && (
-                        <ProgressiveControl loading={deleting} control={<IconButton icon={"pi-trash"} color={"text-red-500"} onClick={deleteCourse} />} />
+                        <ProgressiveControl
+                            loading={deleting}
+                            control={
+                                <ConfirmationWrapper action={deleteCourse}>
+                                    <IconButton icon={"pi-trash"} color={"text-red-500"} />
+                                </ConfirmationWrapper>
+                            }
+                        />
                     )}
                 </HasRequiredAuthority>
                 {!!updatingViewIndex && <IconButton icon={"pi-equals"} color={"text-indigo-800"} />}
