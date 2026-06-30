@@ -88,10 +88,10 @@ export default function DialogAddCounselingNote({ visible, closeDialog, setCouns
 
             <FileInput
                 className="mt-3"
-                label="Media"
+                label="Attachment"
                 type="image"
-                cdn_url={note?.media}
-                setCDNUrl={(media) => setNote((prev) => ({ ...prev, media }))}
+                cdn_url={note?.attachment}
+                setCDNUrl={(attachment) => setNote((prev) => ({ ...prev, attachment }))}
                 disabled={loading}
             />
 
