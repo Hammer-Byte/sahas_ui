@@ -7,7 +7,7 @@ import HasRequiredAuthority from "../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../constants";
 import { TEXT_SMALL, ICON_SIZE } from "../../style";
 
-export default function Category({ id, image, title, courses_count, updatingViewIndex }) {
+export default function Category({ id, image, title, courses_count, updatingViewIndex, setDialogEditCategory }) {
     const { requestAPI, showToast } = useAppContext();
     const { setCategories } = useOutletContext();
 
@@ -48,6 +48,24 @@ export default function Category({ id, image, title, courses_count, updatingView
                 </div>
             </div>
             {!!updatingViewIndex && <IconButton icon={"pi-equals"} color={"text-indigo-800"} className={ICON_SIZE} />}
+            {!updatingViewIndex && (
+                <HasRequiredAuthority requiredAuthority={AUTHORITIES.UPDATE_COURSE_CATEGORY}>
+                    <IconButton
+                        icon={"pi-pencil"}
+                        color={"text-orange-500"}
+                        className={ICON_SIZE}
+                        onClick={() =>
+                            setDialogEditCategory((prev) => ({
+                                ...prev,
+                                visible: true,
+                                id,
+                                title,
+                                image,
+                            }))
+                        }
+                    />
+                </HasRequiredAuthority>
+            )}
             {!updatingViewIndex && (
                 <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_COURSE_CATEGORY}>
                     <ProgressiveControl
