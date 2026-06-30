@@ -3,6 +3,7 @@ import Operations from "../components/dashboard/Operations";
 import { useAppContext } from "../providers/ProviderAppContainer";
 import { Badge } from "primereact/badge";
 import CarouselImages from "../components/dashboard/CarouselImages";
+import ExamReminder from "../components/dashboard/ExamReminder";
 import { TEXT_SMALL, TEXT_TITLE } from "../style";
 import HasRequiredAuthority from "../components/dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../constants";
@@ -62,6 +63,7 @@ https://www.sahasinstitute.com/`;
                 </i>
             </div>
 
+            <ExamReminder className="mb-2" />
             <CarouselImages className={"mb-2"} images={pageConfig?.carousel_images} />
             <Operations className={"mx-2 mt-2 flex-1 min-h-0 overflow-scroll"} />
 

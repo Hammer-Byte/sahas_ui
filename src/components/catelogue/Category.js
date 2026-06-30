@@ -1,13 +1,14 @@
 import { useCallback, useState } from "react";
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import IconButton from "../common/IconButton";
 import HasRequiredAuthority from "../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../constants";
 import { TEXT_SMALL, ICON_SIZE } from "../../style";
 
-export default function Category({ id, image, title, courses_count, updatingViewIndex }) {
+export default function Category({ id, image, title, courses_count, updatingViewIndex, setDialogEditCategory }) {
     const { requestAPI, showToast } = useAppContext();
     const { setCategories } = useOutletContext();
 
@@ -49,10 +50,32 @@ export default function Category({ id, image, title, courses_count, updatingView
             </div>
             {!!updatingViewIndex && <IconButton icon={"pi-equals"} color={"text-indigo-800"} className={ICON_SIZE} />}
             {!updatingViewIndex && (
+                <HasRequiredAuthority requiredAuthority={AUTHORITIES.UPDATE_COURSE_CATEGORY}>
+                    <IconButton
+                        icon={"pi-pencil"}
+                        color={"text-orange-500"}
+                        className={ICON_SIZE}
+                        onClick={() =>
+                            setDialogEditCategory((prev) => ({
+                                ...prev,
+                                visible: true,
+                                id,
+                                title,
+                                image,
+                            }))
+                        }
+                    />
+                </HasRequiredAuthority>
+            )}
+            {!updatingViewIndex && (
                 <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_COURSE_CATEGORY}>
                     <ProgressiveControl
                         loading={deleting}
-                        control={<IconButton icon={"pi-trash"} color={"text-red-500"} onClick={deleteCategory} className={ICON_SIZE} />}
+                        control={
+                            <ConfirmationWrapper action={deleteCategory}>
+                                <IconButton icon={"pi-trash"} color={"text-red-500"} className={ICON_SIZE} />
+                            </ConfirmationWrapper>
+                        }
                     />
                 </HasRequiredAuthority>
             )}

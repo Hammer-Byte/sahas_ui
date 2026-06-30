@@ -5,6 +5,7 @@ import { Button } from "primereact/button";
 import { useDispatch } from "react-redux";
 import { removeAuthority } from "../../redux/sliceTemplateConfig";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import HasRequiredAuthority from "../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../constants";
 
@@ -36,7 +37,11 @@ export default function Authority({ id, created_on, title, description }) {
             <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_AUTHORITIES}>
                 <ProgressiveControl
                     loading={deleting}
-                    control={<Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" onClick={deleteAuthority} />}
+                    control={
+                        <ConfirmationWrapper action={deleteAuthority}>
+                            <Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" />
+                        </ConfirmationWrapper>
+                    }
                 />
             </HasRequiredAuthority>
         </div>

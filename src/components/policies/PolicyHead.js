@@ -1,6 +1,7 @@
 import { getReadableDate } from "../../utils";
 import { TEXT_NORMAL, TEXT_SMALL } from "../../style";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import { Button } from "primereact/button";
 import { useCallback, useState } from "react";
 import { useAppContext } from "../../providers/ProviderAppContainer";
@@ -68,7 +69,11 @@ export default function PolicyHead({ id, title, updated_at, description, setPoli
             <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_POLICY}>
                 <ProgressiveControl
                     loading={loading}
-                    control={<Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" onClick={deletePolicy} />}
+                    control={
+                        <ConfirmationWrapper action={deletePolicy}>
+                            <Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" />
+                        </ConfirmationWrapper>
+                    }
                 />
             </HasRequiredAuthority>
         </div>

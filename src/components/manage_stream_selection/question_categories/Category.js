@@ -5,6 +5,7 @@ import { getReadableDate } from "../../../utils";
 import HasRequiredAuthority from "../../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../../constants";
 import ProgressiveControl from "../../common/ProgressiveControl";
+import ConfirmationWrapper from "../../common/ConfirmationWrapper";
 import IconButton from "../../common/IconButton";
 import { useNavigate } from "react-router-dom";
 
@@ -82,7 +83,11 @@ export default function Category({ id, title, updated_at, active, questions, set
                 <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_STREAM_SELECTION_QUESTION_CATEGORY}>
                     <ProgressiveControl
                         loading={loading}
-                        control={<IconButton color={"text-red-500"} icon="pi pi-trash" rounded onClick={deleteCategory} className={ICON_SIZE} />}
+                        control={
+                            <ConfirmationWrapper action={deleteCategory}>
+                                <IconButton color={"text-red-500"} icon="pi pi-trash" rounded className={ICON_SIZE} />
+                            </ConfirmationWrapper>
+                        }
                     />
                 </HasRequiredAuthority>
             )}

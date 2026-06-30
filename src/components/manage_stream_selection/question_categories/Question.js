@@ -5,6 +5,7 @@ import { useAppContext } from "../../../providers/ProviderAppContainer";
 import HasRequiredAuthority from "../../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../../constants";
 import ProgressiveControl from "../../common/ProgressiveControl";
+import ConfirmationWrapper from "../../common/ConfirmationWrapper";
 import IconButton from "../../common/IconButton";
 import { ICON_SIZE } from "../../../style";
 
@@ -67,7 +68,11 @@ export default function Question({ id, question, media_url, options, setQuestion
                         <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_STREAM_SELECTION_TEST_QUESTION}>
                             <ProgressiveControl
                                 loading={loading}
-                                control={<Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" onClick={deletePolicy} />}
+                                control={
+                                    <ConfirmationWrapper action={deletePolicy}>
+                                        <Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" />
+                                    </ConfirmationWrapper>
+                                }
                             />
                         </HasRequiredAuthority>
                     )}

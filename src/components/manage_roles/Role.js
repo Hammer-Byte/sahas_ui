@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { removeRole, replaceRole } from "../../redux/sliceTemplateConfig";
 import DialogManageRoleAuthorities from "./DialogManageRoleAuthority";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import { Checkbox } from "primereact/checkbox";
 import { AUTHORITIES } from "../../constants";
 import HasRequiredAuthority from "../dependencies/HasRequiredAuthority";
@@ -92,7 +93,11 @@ export default function Role({ created_on, ...props }) {
             <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_ROLES}>
                 <ProgressiveControl
                     loading={deleting}
-                    control={<Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" onClick={deleteRole} />}
+                    control={
+                        <ConfirmationWrapper action={deleteRole}>
+                            <Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" />
+                        </ConfirmationWrapper>
+                    }
                 />
             </HasRequiredAuthority>
 

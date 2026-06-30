@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useAppContext } from "../../providers/ProviderAppContainer";
 import { getReadableDate } from "../../utils";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import DialogEditMedia from "./DialogEditMedia";
 import { useNavigate } from "react-router-dom";
 import IconButton from "../common/IconButton";
@@ -107,7 +108,14 @@ export default function Media({ id, title, setMediaCatalogue, type, external_url
 
             <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_MEDIA}>
                 {!updatingViewIndex && (
-                    <ProgressiveControl loading={loading} control={<IconButton icon={`pi-trash`} color={"text-red-500"} onClick={deleteMedia} />} />
+                    <ProgressiveControl
+                        loading={loading}
+                        control={
+                            <ConfirmationWrapper action={deleteMedia}>
+                                <IconButton icon={`pi-trash`} color={"text-red-500"} />
+                            </ConfirmationWrapper>
+                        }
+                    />
                 )}
             </HasRequiredAuthority>
 

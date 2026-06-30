@@ -4,6 +4,7 @@ import { useAppContext } from "../../../providers/ProviderAppContainer";
 import { useDispatch } from "react-redux";
 import { removeCarouselImage } from "../../../redux/sliceTemplateConfig";
 import HasRequiredAuthority from "../../dependencies/HasRequiredAuthority";
+import ConfirmationWrapper from "../../common/ConfirmationWrapper";
 import { AUTHORITIES } from "../../../constants";
 
 export default function Image({ id, click_link, source }) {
@@ -41,16 +42,17 @@ export default function Image({ id, click_link, source }) {
             />
 
             <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_CAROUSEL}>
-                <Button
-                    onClick={deleteCarouselImage}
-                    className="absolute bottom-0 right-0 m-3"
-                    icon="pi pi-trash"
-                    rounded
-                    outlined
-                    severity="danger"
-                    aria-label="Cancel"
-                    loading={deleting}
-                />
+                <ConfirmationWrapper action={deleteCarouselImage}>
+                    <Button
+                        className="absolute bottom-0 right-0 m-3"
+                        icon="pi pi-trash"
+                        rounded
+                        outlined
+                        severity="danger"
+                        aria-label="Cancel"
+                        loading={deleting}
+                    />
+                </ConfirmationWrapper>
             </HasRequiredAuthority>
         </div>
     );

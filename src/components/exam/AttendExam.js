@@ -204,9 +204,10 @@ export default function AttendExam() {
 
             {submitError && <NoContent error={submitError} />}
 
-            <ExamAttendHeader exam={exam} secondsUntilEnd={secondsUntilEnd} onTimeUp={onTimeUp} />
-
-            <ExamLiveCameraPreview />
+            <div className="flex align-items-center justify-content-between gap-3 px-3 py-2 border-bottom-1 border-gray-200 bg-gray-50">
+                <ExamLiveCameraPreview />
+                <ExamAttendHeader exam={exam} secondsUntilEnd={secondsUntilEnd} onTimeUp={onTimeUp} />
+            </div>
 
             <ExamQuestionStrip
                 questions={questions}

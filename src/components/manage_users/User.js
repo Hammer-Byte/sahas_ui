@@ -27,6 +27,7 @@ export default function User() {
         { label: "Devices", icon: "pi pi-tablet", command: () => navigate(`devices`) },
         { label: "Wallet", icon: "pi pi-wallet", command: () => navigate(`wallet`) },
         { label: "Notes", icon: "pi pi-clipboard", command: () => navigate(`global-notes`) },
+        { label: "Counseling", icon: "pi pi-comments", command: () => navigate(`counseling-notes`) },
         { label: "Roles", icon: "pi pi-id-card", command: () => navigate(`roles`) },
     ];
 

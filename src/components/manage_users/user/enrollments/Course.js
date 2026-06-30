@@ -5,6 +5,7 @@ import { useOutletContext } from "react-router-dom";
 import { useCallback, useState } from "react";
 import { useAppContext } from "../../../../providers/ProviderAppContainer";
 import ProgressiveControl from "../../../common/ProgressiveControl";
+import ConfirmationWrapper from "../../../common/ConfirmationWrapper";
 import HasRequiredAuthority from "../../../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../../../constants";
 
@@ -42,7 +43,11 @@ export default function Course({ id, setCourses, ...course }) {
             <HasRequiredAuthority requiredAuthority={AUTHORITIES.DELETE_ENROLLMENT_COURSE}>
                 <ProgressiveControl
                     loading={deleting}
-                    control={<Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" onClick={deleteEnrollmentCourse} />}
+                    control={
+                        <ConfirmationWrapper action={deleteEnrollmentCourse}>
+                            <Button className="w-2rem h-2rem" icon="pi pi-trash" rounded severity="danger" />
+                        </ConfirmationWrapper>
+                    }
                 />
             </HasRequiredAuthority>
         </div>

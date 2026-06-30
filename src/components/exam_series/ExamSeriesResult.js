@@ -100,10 +100,32 @@ export default function ExamSeriesResult() {
                                 <div className="flex flex-column gap-3 py-2">
                                     <div className="flex flex-wrap align-items-center gap-2">
                                         <Tag value={`Total marks: ${exam.total_marks ?? 0}`} severity="info" pt={{ value: { className: TEXT_SMALL } }} />
-                                        <span className={`${TEXT_SMALL} text-color-secondary`}>
-                                            {getReadableDate({ date: exam.start_at })} - {getReadableDate({ date: exam.end_at })}
+                                        <span
+                                            className={`${TEXT_SMALL} flex align-items-center gap-2 border-1 border-primary-200 bg-primary-50 text-primary border-round px-2 py-1`}
+                                        >
+                                            <i className="pi pi-calendar" aria-hidden />
+                                            <span className="font-semibold">Exam window:</span>
+                                            <span>
+                                                {getReadableDate({ date: exam.start_at })} - {getReadableDate({ date: exam.end_at })}
+                                            </span>
                                         </span>
                                     </div>
+                                    {(exam.submission_start_timestamp || exam.submission_end_timestamp) && (
+                                        <div className="flex flex-wrap gap-3">
+                                            {exam.submission_start_timestamp && (
+                                                <span className={`${TEXT_SMALL} text-color-secondary`}>
+                                                    <span className="font-semibold">Started at:</span>{" "}
+                                                    {getReadableDate({ date: exam.submission_start_timestamp })}
+                                                </span>
+                                            )}
+                                            {exam.submission_end_timestamp && (
+                                                <span className={`${TEXT_SMALL} text-color-secondary`}>
+                                                    <span className="font-semibold">Submitted at:</span>{" "}
+                                                    {getReadableDate({ date: exam.submission_end_timestamp })}
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
 
                                     {exam.questions?.length ? (
                                         exam.questions.map((question) => <ExamResultQuestion key={question.id} question={question} />)

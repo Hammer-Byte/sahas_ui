@@ -37,6 +37,7 @@ import Result from "../components/chapter_test/Result";
 import Policies from "../pages/Policies";
 import ManageInquiries from "../pages/ManageInquiries";
 import GlobalNotes from "../components/manage_users/user/GlobalNotes";
+import CounselingNotes from "../components/manage_users/user/CounselingNotes";
 import StreamSelectionTestResults from "../components/manage_users/user/StreamSelectionTestResults";
 import ManageStreamSelection from "../pages/ManageStreamSelection";
 import Questions from "../components/manage_stream_selection/question_categories/Questions";
@@ -129,6 +130,7 @@ export default function App() {
                                 <Route path="devices" element={<Devices />} />
                                 <Route path="wallet" element={<Wallet />} />
                                 <Route path="global-notes" element={<GlobalNotes />} />
+                                <Route path="counseling-notes" element={<CounselingNotes />} />
                                 <Route
                                     path="roles"
                                     element={

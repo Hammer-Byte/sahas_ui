@@ -5,6 +5,7 @@ import { useAppContext } from "../../providers/ProviderAppContainer";
 import { ICON_SIZE, TEXT_NORMAL, TEXT_SMALL } from "../../style";
 import IconButton from "../common/IconButton";
 import ProgressiveControl from "../common/ProgressiveControl";
+import ConfirmationWrapper from "../common/ConfirmationWrapper";
 import DialogEditExamQuestion from "./DialogEditExamQuestion";
 import { resolveCorrectChoice } from "./examQuestionUtils";
 
@@ -89,7 +90,9 @@ export default function ExamQuestion({
                                         }))
                                     }
                                 />
-                                <IconButton color="text-red-500" icon="pi pi-trash" rounded onClick={deleteExamQuestion} className={ICON_SIZE} />
+                                <ConfirmationWrapper action={deleteExamQuestion}>
+                                    <IconButton color="text-red-500" icon="pi pi-trash" rounded className={ICON_SIZE} />
+                                </ConfirmationWrapper>
                             </div>
                         }
                     />
