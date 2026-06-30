@@ -9,7 +9,7 @@ import HasRequiredAuthority from "../../../dependencies/HasRequiredAuthority";
 import { AUTHORITIES } from "../../../../constants";
 import { Badge } from "primereact/badge";
 
-export default function Note({ id, created_by_full_name, created_at, note, type, media, setNotes, setDialogEditCounselingNote }) {
+export default function Note({ id, created_by_full_name, created_at, note, type, attachment, setNotes, setDialogEditCounselingNote }) {
     const { requestAPI, showToast } = useAppContext();
 
     const [loading, setLoading] = useState();
@@ -48,9 +48,9 @@ export default function Note({ id, created_by_full_name, created_at, note, type,
                     title={`${created_by_full_name} at ${getReadableDate({ date: created_at })}`}
                     value={note}
                 />
-                {!!media && (
-                    <a href={media} target="_blank" rel="noopener noreferrer">
-                        <img src={media} alt="Counseling media" className="max-w-8rem border-round border-1 border-gray-300" />
+                {!!attachment && (
+                    <a href={attachment} target="_blank" rel="noopener noreferrer" className="text-primary" title="Open attachment">
+                        <i className="pi pi-link text-xl" />
                     </a>
                 )}
             </div>
@@ -71,7 +71,7 @@ export default function Note({ id, created_by_full_name, created_at, note, type,
                                 id,
                                 note,
                                 type,
-                                media,
+                                attachment,
                             }))
                         }
                     />

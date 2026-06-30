@@ -22,7 +22,7 @@ export default function DialogEditCounselingNote({ visible, closeDialog, setCoun
         requestAPI({
             requestPath: `counseling-notes`,
             requestMethod: "PATCH",
-            requestPostBody: { id: note.id, note: note.note, type: note.type, media: note.media },
+            requestPostBody: { id: note.id, note: note.note, type: note.type, attachment: note.attachment },
             setLoading: setLoading,
             onRequestFailure: () => showToast({ severity: "error", summary: "Failed", detail: "Failed To Update Counseling Note !", life: 2000 }),
             onResponseReceieved: (updatedNote, responseCode) => {
@@ -86,10 +86,10 @@ export default function DialogEditCounselingNote({ visible, closeDialog, setCoun
 
             <FileInput
                 className="mt-3"
-                label="Media"
+                label="Attachment"
                 type="image"
-                cdn_url={note?.media}
-                setCDNUrl={(media) => setNote((prev) => ({ ...prev, media }))}
+                cdn_url={note?.attachment}
+                setCDNUrl={(attachment) => setNote((prev) => ({ ...prev, attachment }))}
                 disabled={loading}
             />
 
