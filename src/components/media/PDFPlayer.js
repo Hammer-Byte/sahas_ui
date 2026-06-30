@@ -9,18 +9,14 @@ import { TEXT_BADGE } from "../../style";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.worker.min.js`;
 
+const PDF_PAGE_WIDTH = 595;
+
 export default function PDFPlayer({ cdn_url, title, downloadable }) {
     const [numPages, setNumPages] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-
     const [scale, setScale] = useState(1.0);
     const [isFullScreen, setIsFullScreen] = useState(false);
 
     const containerRef = useRef(null);
-
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-    const [startDrag, setStartDrag] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
@@ -31,21 +27,11 @@ export default function PDFPlayer({ cdn_url, title, downloadable }) {
         const container = containerRef.current;
         if (!container) return;
 
-        const pdfPageWidth = 700; // Default width of a PDF page in points
-        const pdfPageHeight = 500; // Default height of a PDF page in points
-
         const containerWidth = container.offsetWidth;
-        const containerHeight = container.offsetHeight;
-
-        const scaleWidth = containerWidth / pdfPageWidth;
-        const scaleHeight = containerHeight / pdfPageHeight;
-
-        // Choose the smaller scale to fit the entire page in the container
-        setScale(Math.min(scaleWidth, scaleHeight));
+        setScale(Math.max(0.5, (containerWidth - 16) / PDF_PAGE_WIDTH));
     };
 
     useEffect(() => {
-        // Adjust scale on window resize
         const handleResize = () => adjustScaleToFit();
         window.addEventListener("resize", handleResize);
 
@@ -54,9 +40,6 @@ export default function PDFPlayer({ cdn_url, title, downloadable }) {
 
     const zoomIn = () => setScale((prevScale) => prevScale + 0.2);
     const zoomOut = () => setScale((prevScale) => Math.max(0.5, prevScale - 0.2));
-    const navigatePage = (step) => {
-        setCurrentPage((prevPage) => Math.min(Math.max(prevPage + step, 1), numPages));
-    };
 
     const toggleFullScreenOrZoomOut = () => {
         const element = document.getElementById("pdf-container");
@@ -78,48 +61,14 @@ export default function PDFPlayer({ cdn_url, title, downloadable }) {
 
     const disableRightClick = (e) => e.preventDefault();
 
-    const startDragHandler = (e) => {
-        setStartDrag({
-            x: e.clientX || e.touches[0].clientX,
-            y: e.clientY || e.touches[0].clientY,
-        });
-        setIsDragging(true);
-    };
-
-    const dragHandler = (e) => {
-        if (!isDragging) return;
-
-        const currentX = e.clientX || e.touches[0].clientX;
-        const currentY = e.clientY || e.touches[0].clientY;
-
-        setDragOffset((prev) => ({
-            x: prev.x + (currentX - startDrag.x),
-            y: prev.y + (currentY - startDrag.y),
-        }));
-
-        setStartDrag({ x: currentX, y: currentY });
-    };
-
-    const endDragHandler = () => setIsDragging(false);
-
     return cdn_url ? (
-        <div id="pdf-container" ref={containerRef}>
-            <div className="flex align-items-center justify-content-center bg-primary">
-                <Button
-                    icon="pi pi-angle-left"
-                    className="p-button-rounded p-button-text text-white"
-                    onClick={() => navigatePage(-1)}
-                    disabled={currentPage <= 1}
-                />
-                <span className={`${TEXT_BADGE} font-semibold`}>
-                    {currentPage}/{numPages}
-                </span>
-                <Button
-                    icon="pi pi-angle-right"
-                    className="p-button-rounded p-button-text text-white"
-                    onClick={() => navigatePage(1)}
-                    disabled={currentPage >= numPages}
-                />
+        <div id="pdf-container" ref={containerRef} className="flex flex-column flex-1 min-h-0 h-full">
+            <div className="flex align-items-center justify-content-center bg-primary flex-shrink-0">
+                {!!numPages && (
+                    <span className={`${TEXT_BADGE} font-semibold text-white mr-2`}>
+                        {numPages} {numPages === 1 ? "page" : "pages"}
+                    </span>
+                )}
                 <Button icon="pi pi-search-minus" className="p-button-rounded p-button-text text-white" onClick={zoomOut} />
                 <Button icon="pi pi-search-plus" className="p-button-rounded p-button-text text-white" onClick={zoomIn} />
                 <Button
@@ -129,26 +78,18 @@ export default function PDFPlayer({ cdn_url, title, downloadable }) {
                 />
                 {!!downloadable && <Button icon="pi pi-download" className="p-button-rounded p-button-text" onClick={() => saveAs(cdn_url, `${title}.pdf`)} />}
             </div>
-            <div className="flex flex-column overflow-auto bg-gray-200 h-30rem" onContextMenu={disableRightClick}>
-                <div
-                    className="flex justify-content-center align-items-center"
-                    style={{
-                        cursor: isDragging ? "grabbing" : "grab",
-                        transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
-                        transition: isDragging ? "none" : "transform 0.2s ease-out",
-                    }}
-                    onMouseDown={startDragHandler}
-                    onMouseMove={dragHandler}
-                    onMouseUp={endDragHandler}
-                    onMouseLeave={endDragHandler}
-                    onTouchStart={startDragHandler}
-                    onTouchMove={dragHandler}
-                    onTouchEnd={endDragHandler}
-                >
-                    <Document file={cdn_url} onLoadSuccess={onDocumentLoadSuccess} onLoadError={(error) => console.error("Error loading PDF:", error)}>
-                        <Page pageNumber={currentPage} scale={scale} renderAnnotationLayer={false} renderTextLayer={false} />
-                    </Document>
-                </div>
+            <div
+                className="flex flex-column align-items-center flex-1 overflow-y-auto overflow-x-hidden bg-gray-200 min-h-0 py-2"
+                onContextMenu={disableRightClick}
+            >
+                <Document file={cdn_url} onLoadSuccess={onDocumentLoadSuccess} onLoadError={(error) => console.error("Error loading PDF:", error)}>
+                    {!!numPages &&
+                        Array.from({ length: numPages }, (_, index) => (
+                            <div key={`page_${index + 1}`} className="mb-2">
+                                <Page pageNumber={index + 1} scale={scale} renderAnnotationLayer={false} renderTextLayer={false} />
+                            </div>
+                        ))}
+                </Document>
             </div>
         </div>
     ) : (

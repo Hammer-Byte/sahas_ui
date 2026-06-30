@@ -51,11 +51,8 @@ export default function ExamLiveCameraPreview() {
 
     return (
         <div className="flex align-items-center justify-content-center gap-2 px-2 py-2 border-bottom-1 border-gray-200 bg-gray-50">
-            <div
-                className="flex-shrink-0 border-round border-1 border-gray-300 overflow-hidden bg-gray-900"
-                style={{ width: "4rem", height: "4rem", minWidth: "4rem", minHeight: "4rem" }}
-            >
-                <video ref={videoRef} className="w-full h-full object-cover" playsInline muted autoPlay style={{ width: "4rem", height: "4rem" }} />
+            <div className="flex-shrink-0 border-round border-1 border-gray-300 overflow-hidden bg-gray-900 w-8rem h-8rem">
+                <video ref={videoRef} className="w-full h-full object-cover" playsInline muted autoPlay />
             </div>
             <span className={`${TEXT_SMALL} text-color-secondary`}>Assessment is getting supervised</span>
         </div>

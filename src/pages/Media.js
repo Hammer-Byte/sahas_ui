@@ -48,7 +48,9 @@ export default function Media() {
                 ]}
             />
 
-            {loading ? <Loading /> : media ? <MediaPlayer {...media} /> : <NoContent />}
+            <div className="flex-1 min-h-0 flex flex-column">
+                {loading ? <Loading /> : media ? <MediaPlayer {...media} /> : <NoContent />}
+            </div>
         </div>
     );
 }
