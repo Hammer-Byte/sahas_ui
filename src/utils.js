@@ -26,26 +26,7 @@ export async function generateDeviceFingerprint() {
 
     const screenRes = window.screen.width + window.screen.height;
 
-    const hardwareFingerPrint = await sha256(
-        [
-            screenRes,
-            global.screen.colorDepth,
-            navigator.hardwareConcurrency,
-            navigator.deviceMemory || "unknown",
-            navigator.platform,
-            navigator.maxTouchPoints,
-            Intl.DateTimeFormat().resolvedOptions().timeZone,
-        ].join("::"),
-    );
-
-    return btoa(unescape(encodeURIComponent(`${type} - ${brand} ${model} - ${os}(${osVersion}) - ${screenRes} | ${hardwareFingerPrint}`)));
-}
-
-async function sha256(input) {
-    const buffer = new TextEncoder().encode(input);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    return btoa(unescape(encodeURIComponent(`${type} - ${brand} ${model} - ${os}(${osVersion}) - ${screenRes}`)));
 }
 
 export function getFilterNameFormalized(input) {
