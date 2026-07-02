@@ -16,6 +16,8 @@ export default function Exam({
     subject_title,
     start_at,
     end_at,
+    positive_marks,
+    negative_marks,
     updated_at,
     setExamSeries,
     subjects,
@@ -82,6 +84,8 @@ export default function Exam({
                                         subject_id,
                                         start_at,
                                         end_at,
+                                        positive_marks,
+                                        negative_marks,
                                     }))
                                 }
                             />
