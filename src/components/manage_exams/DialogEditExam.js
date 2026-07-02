@@ -6,6 +6,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
+import { InputNumber } from "primereact/inputnumber";
 import { getReadableDate, getWriteableDate } from "../../utils";
 import { TEXT_SMALL, TEXT_TITLE } from "../../style";
 
@@ -24,6 +25,8 @@ export default function DialogEditExam({
         ...props,
         start_at: props?.start_at ? new Date(props.start_at) : null,
         end_at: props?.end_at ? new Date(props.end_at) : null,
+        positive_marks: props?.positive_marks ?? 1,
+        negative_marks: props?.negative_marks ?? -1,
     });
     const [loading, setLoading] = useState();
 
@@ -88,6 +91,8 @@ export default function DialogEditExam({
                 subject_id: exam?.subject_id,
                 start_at: getWriteableDate({ date: exam?.start_at }),
                 end_at: getWriteableDate({ date: exam?.end_at }),
+                positive_marks: exam?.positive_marks ?? 1,
+                negative_marks: exam?.negative_marks ?? -1,
             },
             setLoading: setLoading,
             onRequestFailure: () => showToast({ severity: "error", summary: "Failed", detail: "Failed To Update Exam !", life: 2000 }),
@@ -176,6 +181,34 @@ export default function DialogEditExam({
                 />
                 <label htmlFor="end_at" className={TEXT_SMALL}>
                     End
+                </label>
+            </FloatLabel>
+
+            <FloatLabel className="mt-5">
+                <InputNumber
+                    useGrouping={false}
+                    value={exam?.positive_marks}
+                    inputId="positive_marks"
+                    className="w-full"
+                    onChange={(e) => setExamForm((prev) => ({ ...prev, positive_marks: e.value }))}
+                    disabled={loading}
+                />
+                <label htmlFor="positive_marks" className={TEXT_SMALL}>
+                    Positive Marks
+                </label>
+            </FloatLabel>
+
+            <FloatLabel className="mt-5">
+                <InputNumber
+                    useGrouping={false}
+                    value={exam?.negative_marks}
+                    inputId="negative_marks"
+                    className="w-full"
+                    onChange={(e) => setExamForm((prev) => ({ ...prev, negative_marks: e.value }))}
+                    disabled={loading}
+                />
+                <label htmlFor="negative_marks" className={TEXT_SMALL}>
+                    Negative Marks
                 </label>
             </FloatLabel>
 
